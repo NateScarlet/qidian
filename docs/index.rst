@@ -3,7 +3,6 @@
 
 .. toctree::
    :maxdepth: 2
+   :glob:
 
-   /book
-   /rank
-   /search
+   /book/*

@@ -6,7 +6,7 @@ docs/_build/html/.git:
 	rm -rf docs/_build/html
 	git worktree add docs/_build/html -B gh-pages
 	
-docs/_build/html: docs/* docs/_build/html/.git
+docs/_build/html: docs/* docs/*/*.rst docs/_build/html/.git
 	$(MAKE) -C docs html
 
 test:
