@@ -6,3 +6,4 @@
    :glob:
 
    /book/*
+   /font_deobfuscate

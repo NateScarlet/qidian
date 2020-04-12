@@ -18,3 +18,8 @@
 # Editors
 .vscode/*
 !.vscode/example
+
+
+#
+
+.env
