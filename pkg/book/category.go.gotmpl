@@ -18,7 +18,7 @@ const (
 )
 
 func (c Category) String() string {
-    switch c{
+    switch c {
 {{- range $k, $v := .MainCategories}}
     case C{{$v}}:
         return "{{$v}}"
@@ -27,6 +27,15 @@ func (c Category) String() string {
     return ""
 }
 
+func CategoryByName(v string) Category {
+    switch v {
+{{- range $k, $v := .MainCategories}}
+    case "{{$v}}":
+        return C{{$v}}
+{{- end }}
+    }
+    return Category("")
+}
 
 func (sc SubCategory) Parent() Category {
     switch sc{
@@ -39,11 +48,21 @@ func (sc SubCategory) Parent() Category {
 }
 
 func (sc SubCategory) String() string {
-    switch sc{
+    switch sc {
 {{- range $k, $v := .SubCategories}}
     case SC{{$v.Name}}:
         return "{{$v.Name}}"
 {{- end }}
     }
     return ""
+}
+
+func SubCategoryByName(v string) SubCategory {
+    switch v {
+{{- range $k, $v := .SubCategories}}
+    case "{{$v.Name}}":
+        return SC{{$v.Name}}
+{{- end }}
+    }
+    return SubCategory("")
 }

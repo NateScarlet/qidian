@@ -104,7 +104,7 @@ const (
 )
 
 func (c Category) String() string {
-    switch c{
+    switch c {
     case C全部:
         return "全部"
     case C奇幻:
@@ -139,6 +139,41 @@ func (c Category) String() string {
     return ""
 }
 
+func CategoryByName(v string) Category {
+    switch v {
+    case "全部":
+        return C全部
+    case "奇幻":
+        return C奇幻
+    case "悬疑":
+        return C悬疑
+    case "轻小说":
+        return C轻小说
+    case "现实":
+        return C现实
+    case "武侠":
+        return C武侠
+    case "短篇":
+        return C短篇
+    case "玄幻":
+        return C玄幻
+    case "仙侠":
+        return C仙侠
+    case "都市":
+        return C都市
+    case "历史":
+        return C历史
+    case "军事":
+        return C军事
+    case "游戏":
+        return C游戏
+    case "体育":
+        return C体育
+    case "科幻":
+        return C科幻
+    }
+    return Category("")
+}
 
 func (sc SubCategory) Parent() Category {
     switch sc{
@@ -305,7 +340,7 @@ func (sc SubCategory) Parent() Category {
 }
 
 func (sc SubCategory) String() string {
-    switch sc{
+    switch sc {
     case SC都市生活:
         return "都市生活"
     case SC青春校园:
@@ -466,4 +501,168 @@ func (sc SubCategory) String() string {
         return "足球运动"
     }
     return ""
+}
+
+func SubCategoryByName(v string) SubCategory {
+    switch v {
+    case "都市生活":
+        return SC都市生活
+    case "青春校园":
+        return SC青春校园
+    case "娱乐明星":
+        return SC娱乐明星
+    case "商战职场":
+        return SC商战职场
+    case "都市异能":
+        return SC都市异能
+    case "修真文明":
+        return SC修真文明
+    case "影视剧本":
+        return SC影视剧本
+    case "评论文集":
+        return SC评论文集
+    case "生活随笔":
+        return SC生活随笔
+    case "美文游记":
+        return SC美文游记
+    case "历史神话":
+        return SC历史神话
+    case "另类幻想":
+        return SC另类幻想
+    case "民间传说":
+        return SC民间传说
+    case "古今传奇":
+        return SC古今传奇
+    case "短篇小说":
+        return SC短篇小说
+    case "诗歌散文":
+        return SC诗歌散文
+    case "人物传记":
+        return SC人物传记
+    case "古武未来":
+        return SC古武未来
+    case "史诗奇幻":
+        return SC史诗奇幻
+    case "武侠同人":
+        return SC武侠同人
+    case "古典仙侠":
+        return SC古典仙侠
+    case "游戏系统":
+        return SC游戏系统
+    case "游戏主播":
+        return SC游戏主播
+    case "社会乡土":
+        return SC社会乡土
+    case "生活时尚":
+        return SC生活时尚
+    case "文学艺术":
+        return SC文学艺术
+    case "成功励志":
+        return SC成功励志
+    case "青春文学":
+        return SC青春文学
+    case "黑暗幻想":
+        return SC黑暗幻想
+    case "国术无双":
+        return SC国术无双
+    case "神话修真":
+        return SC神话修真
+    case "现实百态":
+        return SC现实百态
+    case "古武机甲":
+        return SC古武机甲
+    case "架空历史":
+        return SC架空历史
+    case "上古先秦":
+        return SC上古先秦
+    case "两晋隋唐":
+        return SC两晋隋唐
+    case "五代十国":
+        return SC五代十国
+    case "两宋元明":
+        return SC两宋元明
+    case "清史民国":
+        return SC清史民国
+    case "外国历史":
+        return SC外国历史
+    case "抗战烽火":
+        return SC抗战烽火
+    case "谍战特工":
+        return SC谍战特工
+    case "游戏异界":
+        return SC游戏异界
+    case "未来世界":
+        return SC未来世界
+    case "超级科技":
+        return SC超级科技
+    case "时空穿梭":
+        return SC时空穿梭
+    case "进化变异":
+        return SC进化变异
+    case "末世危机":
+        return SC末世危机
+    case "诡秘悬疑":
+        return SC诡秘悬疑
+    case "探险生存":
+        return SC探险生存
+    case "篮球运动":
+        return SC篮球运动
+    case "衍生同人":
+        return SC衍生同人
+    case "搞笑吐槽":
+        return SC搞笑吐槽
+    case "武侠幻想":
+        return SC武侠幻想
+    case "历史传记":
+        return SC历史传记
+    case "奇妙世界":
+        return SC奇妙世界
+    case "现代魔法":
+        return SC现代魔法
+    case "幻想修仙":
+        return SC幻想修仙
+    case "秦汉三国":
+        return SC秦汉三国
+    case "传统武侠":
+        return SC传统武侠
+    case "军旅生涯":
+        return SC军旅生涯
+    case "体育赛事":
+        return SC体育赛事
+    case "侦探推理":
+        return SC侦探推理
+    case "王朝争霸":
+        return SC王朝争霸
+    case "爱情婚姻":
+        return SC爱情婚姻
+    case "原生幻想":
+        return SC原生幻想
+    case "剑与魔法":
+        return SC剑与魔法
+    case "现代修真":
+        return SC现代修真
+    case "军事战争":
+        return SC军事战争
+    case "青春日常":
+        return SC青春日常
+    case "星际文明":
+        return SC星际文明
+    case "电子竞技":
+        return SC电子竞技
+    case "虚拟网游":
+        return SC虚拟网游
+    case "异世大陆":
+        return SC异世大陆
+    case "异术超能":
+        return SC异术超能
+    case "高武世界":
+        return SC高武世界
+    case "东方玄幻":
+        return SC东方玄幻
+    case "战争幻想":
+        return SC战争幻想
+    case "足球运动":
+        return SC足球运动
+    }
+    return SubCategory("")
 }
