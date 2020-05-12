@@ -1,0 +1,49 @@
+{{ $root := . -}}
+
+// Code generated from category.go.gotmpl, DO NOT EDIT.
+
+package book
+
+type Category string
+
+type SubCategory string
+
+const (
+{{- range $k, $v := .MainCategories}}
+    C{{$v}} Category = "{{$k}}"
+{{- end -}}
+{{- range $k, $v := .SubCategories}}
+    SC{{$v.Name}} SubCategory = "{{$k}}"
+{{- end }}
+)
+
+func (c Category) String() string {
+    switch c{
+{{- range $k, $v := .MainCategories}}
+    case C{{$v}}:
+        return "{{$v}}"
+{{- end }}
+    }
+    return ""
+}
+
+
+func (sc SubCategory) Parent() Category {
+    switch sc{
+{{- range $k, $v := .SubCategories}}
+    case SC{{$v.Name}}:
+        return C{{get $root.MainCategories $v.ParentID }}
+{{- end }}
+    }
+    return Category("")
+}
+
+func (sc SubCategory) String() string {
+    switch sc{
+{{- range $k, $v := .SubCategories}}
+    case SC{{$v.Name}}:
+        return "{{$v.Name}}"
+{{- end }}
+    }
+    return ""
+}
