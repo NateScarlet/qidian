@@ -172,7 +172,7 @@ func CategoryByName(v string) Category {
     case "科幻":
         return C科幻
     }
-    return Category("")
+    return ""
 }
 
 func (sc SubCategory) Parent() Category {
@@ -336,7 +336,7 @@ func (sc SubCategory) Parent() Category {
     case SC足球运动:
         return C体育
     }
-    return Category("")
+    return ""
 }
 
 func (sc SubCategory) String() string {
@@ -664,5 +664,5 @@ func SubCategoryByName(v string) SubCategory {
     case "足球运动":
         return SC足球运动
     }
-    return SubCategory("")
+    return ""
 }

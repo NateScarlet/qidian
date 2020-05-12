@@ -34,7 +34,7 @@ func CategoryByName(v string) Category {
         return C{{$v}}
 {{- end }}
     }
-    return Category("")
+    return ""
 }
 
 func (sc SubCategory) Parent() Category {
@@ -44,7 +44,7 @@ func (sc SubCategory) Parent() Category {
         return C{{get $root.MainCategories $v.ParentID }}
 {{- end }}
     }
-    return Category("")
+    return ""
 }
 
 func (sc SubCategory) String() string {
@@ -64,5 +64,5 @@ func SubCategoryByName(v string) SubCategory {
         return SC{{$v.Name}}
 {{- end }}
     }
-    return SubCategory("")
+    return ""
 }
