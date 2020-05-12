@@ -85,7 +85,7 @@ func main() {
 
 	var err error
 	var tmplName = "default"
-	tmpl, err := template.New(tmplName).Funcs(sprig.TxtFuncMap()).Parse("{{toPrettyJson .}}")
+	tmpl, err := template.New(tmplName).Funcs(sprig.TxtFuncMap()).Parse("{{mustToPrettyJson .}}")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -119,7 +119,7 @@ func main() {
 		}
 	}
 
-	var b = bytes.NewBuffer([]byte{})
+	var b = new(bytes.Buffer)
 	err = tmpl.ExecuteTemplate(b, tmplName, c)
 	if err != nil {
 		log.Fatal(err)
