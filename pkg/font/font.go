@@ -9,7 +9,8 @@ import (
 	"golang.org/x/image/font/sfnt"
 )
 
-var fontCache = lru.New(64)
+// Cache to store recent fetched fonts.
+var Cache = lru.New(64)
 
 var fontFlight = singleflight.Group{}
 
@@ -21,7 +22,7 @@ func URL(id string) string {
 // Get font from ttf font url with a lru cache.
 func Get(url string) (*sfnt.Font, error) {
 	v, err := fontFlight.Do(url, func() (interface{}, error) {
-		if v, ok := fontCache.Get(url); ok {
+		if v, ok := Cache.Get(url); ok {
 			return v, nil
 		}
 		resp, err := http.Get(url)
@@ -37,7 +38,7 @@ func Get(url string) (*sfnt.Font, error) {
 		if err != nil {
 			return nil, err
 		}
-		fontCache.Add(url, v)
+		Cache.Add(url, v)
 		return v, nil
 	})
 
