@@ -15,21 +15,15 @@ import (
 // Sort for search
 type Sort string
 
+// Sort for search
 const (
-	// STotalRecommend search sort
 	STotalRecommend Sort = "2"
-	// SCharCount search sort
-	SCharCount = "3"
-	// SLastUpdated search sort
-	SLastUpdated = "5"
-	// SRecentFinished search sort
-	SRecentFinished = "6"
-	// SWeekRecommend search sort
-	SWeekRecommend = "9"
-	// SMonthRecommend search sort
-	SMonthRecommend = "10"
-	// STotalBookmark search sort
-	STotalBookmark = "11"
+	SCharCount           = "3"
+	SLastUpdated         = "5"
+	SRecentFinished      = "6"
+	SWeekRecommend       = "9"
+	SMonthRecommend      = "10"
+	STotalBookmark       = "11"
 )
 
 // Search options
