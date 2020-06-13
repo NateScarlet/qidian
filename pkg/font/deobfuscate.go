@@ -1,7 +1,6 @@
 package font
 
 import (
-	"fmt"
 	"html"
 
 	"golang.org/x/image/font/sfnt"
@@ -27,27 +26,25 @@ func glyphName(font *sfnt.Font, r rune) (ret string, err error) {
 	if err != nil {
 		return
 	}
+	if index == 0 {
+		return
+	}
 	ret, err = font.GlyphName(b, index)
 	return
 }
 
+// Deobfuscate font protected number.
+// characters that not found in font remains unchanged.
 func Deobfuscate(v string, font *sfnt.Font) (ret string, err error) {
 	for _, i := range html.UnescapeString(v) {
 		var name string
 		name, err = glyphName(font, i)
-		if err != nil {
-			return
-		}
-		if name == "" {
-			err = fmt.Errorf("no glyph name found: %v", i)
-			return
-		}
 		trueValue, ok := glyphNameMap[name]
-		if !ok {
-			err = fmt.Errorf("unknown glyph name: %s", name)
-			return
+		if ok {
+			ret += string(trueValue)
+		} else {
+			ret += string(i)
 		}
-		ret += string(trueValue)
 	}
 	return
 }

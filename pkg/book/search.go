@@ -120,19 +120,20 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 	ret = make([]Book, 0, 50)
 	table.
 		Find("tbody > tr").
-		Each(func(i int, s *goquery.Selection) {
+		EachWithBreak(func(i int, s *goquery.Selection) bool {
 			var book = Book{}
 			s.
 				ChildrenFiltered("td").
-				Each(func(i int, s *goquery.Selection) {
+				EachWithBreak(func(i int, s *goquery.Selection) bool {
 					if i > len(columns)-1 {
-						return
+						return false
 					}
 					switch columns[i] {
 					case "类别":
 						parts := strings.SplitN(strings.Trim(s.Text(), "「」"), "·", 2)
 						if len(parts) != 2 {
-							return
+							err = errors.New("unexpected category format")
+							return false
 						}
 						book.Category = CategoryByName(parts[0])
 						book.SubCategory = SubCategoryByName(parts[1])
@@ -141,9 +142,19 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 						book.ID, _ = s.Find("a").Attr("data-bid")
 					case "小说作者":
 						book.Author = s.Text()
+					case "字数":
+						book.CharCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
 					}
+					return true
 				})
+			if err != nil {
+				return false
+			}
 			ret = append(ret, book)
+			return true
 		})
 	return
 

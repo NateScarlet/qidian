@@ -28,6 +28,7 @@ func TestSearch_simple(t *testing.T) {
 				assert.NotEmpty(t, i.Author)
 				assert.NotEmpty(t, i.Category)
 				assert.NotEmpty(t, i.SubCategory)
+				assert.NotEmpty(t, i.CharCount)
 			}
 		})
 

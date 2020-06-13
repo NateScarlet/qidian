@@ -9,8 +9,8 @@ type Book struct {
 	Category            Category
 	SubCategory         SubCategory
 	Tags                []string
-	CharCount           int64
-	MonthTicketCount    int64
-	WeekRecommendCount  int64
-	TotalRecommendCount int64
+	CharCount           uint64
+	MonthTicketCount    uint64
+	WeekRecommendCount  uint64
+	TotalRecommendCount uint64
 }
