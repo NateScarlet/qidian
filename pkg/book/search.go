@@ -147,6 +147,11 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 						if err != nil {
 							return false
 						}
+					case "总收藏":
+						book.BookmarkCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
 					}
 					return true
 				})

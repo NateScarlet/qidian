@@ -16,6 +16,7 @@ func TestSearch_simple(t *testing.T) {
 		NewSearch().SetSubCategory(SC未来世界),
 		NewSearch().SetPage(2),
 		NewSearch().SetPage(2).SetSort(SMonthRecommend),
+		NewSearch().SetSort(STotalBookmark),
 	} {
 		s := c
 		t.Run(fmt.Sprintf("%+v", c), func(t *testing.T) {
@@ -29,6 +30,9 @@ func TestSearch_simple(t *testing.T) {
 				assert.NotEmpty(t, i.Category)
 				assert.NotEmpty(t, i.SubCategory)
 				assert.NotEmpty(t, i.CharCount)
+				if s.Sort == STotalBookmark {
+					assert.NotEmpty(t, i.BookmarkCount)
+				}
 			}
 		})
 
