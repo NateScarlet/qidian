@@ -141,27 +141,27 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 					case "小说作者":
 						book.Author = s.Text()
 					case "字数":
-						book.CharCount, err = parseCountSelection(s)
+						book.CharCount, err = parseSelectionCount(s)
 						if err != nil {
 							return false
 						}
 					case "总收藏":
-						book.BookmarkCount, err = parseCountSelection(s)
+						book.BookmarkCount, err = parseSelectionCount(s)
 						if err != nil {
 							return false
 						}
 					case "周推荐":
-						book.WeekRecommendCount, err = parseCountSelection(s)
+						book.WeekRecommendCount, err = parseSelectionCount(s)
 						if err != nil {
 							return false
 						}
 					case "月推荐":
-						book.MonthRecommendCount, err = parseCountSelection(s)
+						book.MonthRecommendCount, err = parseSelectionCount(s)
 						if err != nil {
 							return false
 						}
 					case "总推荐":
-						book.TotalRecommendCount, err = parseCountSelection(s)
+						book.TotalRecommendCount, err = parseSelectionCount(s)
 						if err != nil {
 							return false
 						}

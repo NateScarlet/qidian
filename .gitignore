@@ -18,8 +18,7 @@
 # Editors
 .vscode/*
 !.vscode/example
-
+!.vscode/cspell.json
 
 #
-
 .env

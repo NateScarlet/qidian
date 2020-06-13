@@ -2,7 +2,6 @@ package book
 
 import (
 	"errors"
-	"html"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,6 +10,7 @@ import (
 	"github.com/NateScarlet/qidian/pkg/font"
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/image/font/sfnt"
+	"golang.org/x/net/html"
 )
 
 func parseCount(v string) (uint64, error) {
@@ -28,9 +28,9 @@ func parseCount(v string) (uint64, error) {
 
 var fontPattern = regexp.MustCompile(`url\('([\w.:\/]+\.ttf)'\)`)
 
-func parseCountSelection(doc *goquery.Selection) (ret uint64, err error) {
+func deobfuscate(doc *goquery.Selection) (ret string, err error) {
 	doc = doc.Clone()
-	styleElem := doc.Find("style")
+	styleElem := doc.Find("style").Remove()
 	style, err := styleElem.Html()
 	if err != nil {
 		return
@@ -46,13 +46,17 @@ func parseCountSelection(doc *goquery.Selection) (ret uint64, err error) {
 	if err != nil {
 		return
 	}
-	var text string
-	styleElem.Remove()
-	text, err = font.Deobfuscate(doc.Text(), f)
+	ret, err = font.Deobfuscate(doc.Text(), f)
+	return
+}
+
+func parseSelectionCount(doc *goquery.Selection) (ret uint64, err error) {
+	var s string
+	s, err = deobfuscate(doc)
 	if err != nil {
 		return
 	}
-	ret, err = parseCount(text)
+	ret, err = parseCount(s)
 	return
 }
 
@@ -96,4 +100,36 @@ func parseTimeAt(s string, t time.Time) (ret time.Time, err error) {
 
 func parseTime(s string) (time.Time, error) {
 	return parseTimeAt(s, time.Now().In(TZ))
+}
+
+// nodeText convert node to multiline text, convert <br> <p> <div> to \n.
+func nodeText(n *html.Node) (ret string) {
+	switch n.Type {
+	case html.TextNode:
+		ret += strings.TrimSpace(n.Data)
+	case html.ElementNode:
+		switch n.Data {
+		case "br":
+			ret += "\n"
+		case "p":
+			fallthrough
+		case "div":
+			ret += "\n"
+			fallthrough
+		default:
+			var cur = n.FirstChild
+			for cur != nil {
+				ret += nodeText(cur)
+				cur = cur.NextSibling
+			}
+		}
+	}
+	return
+}
+
+func nodesText(s []*html.Node) (ret string) {
+	for _, n := range s {
+		ret += nodeText(n)
+	}
+	return strings.TrimSpace(ret)
 }
