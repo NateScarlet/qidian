@@ -1,17 +1,14 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
 	"flag"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
-	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -83,20 +80,6 @@ func main() {
 	flag.StringVar(&output, "o", "", "output")
 	flag.Parse()
 
-	var err error
-	var tmplName = "default"
-	tmpl, err := template.New(tmplName).Funcs(sprig.TxtFuncMap()).Parse("{{mustToPrettyJson .}}")
-	if err != nil {
-		log.Fatal(err)
-	}
-	if flag.NArg() > 0 {
-		_, err = tmpl.ParseFiles(flag.Args()...)
-		if err != nil {
-			log.Fatal(err)
-		}
-		tmplName = filepath.Base(flag.Arg(0))
-	}
-
 	var c = &templateContext{
 		MainCategories: dict{},
 		SubCategories:  dict{},
@@ -119,12 +102,6 @@ func main() {
 		}
 	}
 
-	var b = new(bytes.Buffer)
-	err = tmpl.ExecuteTemplate(b, tmplName, c)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var w io.Writer = os.Stdout
 	if output != "" {
 		var f *os.File
@@ -135,9 +112,11 @@ func main() {
 		defer f.Close()
 		w = f
 	}
-	_, err = io.Copy(w, b)
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	err = enc.Encode(c)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
