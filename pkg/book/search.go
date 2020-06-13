@@ -22,8 +22,8 @@ const (
 	STotalRecommend = "2"
 	// SCharCount search sort
 	SCharCount = "3"
-	// SRecentUpdated search sort
-	SRecentUpdated = "5"
+	// SLastUpdated search sort
+	SLastUpdated = "5"
 	// SRecentFinished search sort
 	SRecentFinished = "6"
 	// SWeekRecommend search sort
@@ -125,7 +125,7 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 			s.
 				ChildrenFiltered("td").
 				EachWithBreak(func(i int, s *goquery.Selection) bool {
-					if i > len(columns)-1 {
+					if i >= len(columns) {
 						return false
 					}
 					switch columns[i] {
@@ -149,6 +149,11 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 						}
 					case "总收藏":
 						book.BookmarkCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
+					case "更新时间":
+						book.LastUpdated, err = parseTime(s.Text())
 						if err != nil {
 							return false
 						}

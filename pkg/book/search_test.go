@@ -33,6 +33,9 @@ func TestSearch_simple(t *testing.T) {
 				if s.Sort == STotalBookmark {
 					assert.NotEmpty(t, i.BookmarkCount)
 				}
+				if s.Sort == "" {
+					assert.NotEmpty(t, i.LastUpdated)
+				}
 			}
 		})
 

@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/NateScarlet/qidian/pkg/font"
 	"github.com/PuerkitoBio/goquery"
@@ -53,4 +54,43 @@ func parseCountSelection(doc *goquery.Selection) (ret uint64, err error) {
 	}
 	ret, err = parseCount(text)
 	return
+}
+
+// TZ is timezone used to parse timezone, defaults to Asia/Shanghai.
+var TZ, _ = time.LoadLocation("Asia/Shanghai")
+
+func parseTimeAt(s string, t time.Time) (ret time.Time, err error) {
+	if strings.HasPrefix(s, "昨日") {
+		t.AddDate(0, 0, -1)
+		var v time.Time
+		v, err = time.Parse("昨日15:04", s)
+		if err != nil {
+			return
+		}
+		ret = time.Date(t.Year(), t.Month(), t.Day()-1, v.Hour(), v.Minute(), 0, 0, t.Location())
+		return
+	} else if strings.HasSuffix(s, "分钟前") {
+		var v int
+		v, err = strconv.Atoi(s[:len(s)-len("分钟前")])
+		if err != nil {
+			return
+		}
+		ret = t.Add(time.Duration(-v) * time.Minute)
+		return
+	} else if strings.HasSuffix(s, "小时前") {
+		var v int
+		v, err = strconv.Atoi(s[:len(s)-len("小时前")])
+		if err != nil {
+			return
+		}
+		ret = t.Add(time.Duration(-v) * time.Hour)
+		return
+	} else {
+		ret, err = time.ParseInLocation("2006-01-02", s, TZ)
+		return
+	}
+}
+
+func parseTime(s string) (time.Time, error) {
+	return parseTimeAt(s, time.Now().In(TZ))
 }
