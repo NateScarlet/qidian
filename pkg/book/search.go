@@ -170,6 +170,11 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 						if err != nil {
 							return false
 						}
+					case "完本时间":
+						book.Finished, err = parseTime(s.Text())
+						if err != nil {
+							return false
+						}
 					}
 					return true
 				})

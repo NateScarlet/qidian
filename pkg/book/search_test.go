@@ -50,6 +50,9 @@ func TestSearch_simple(t *testing.T) {
 				if s.Sort == STotalRecommend {
 					assert.NotEmpty(t, i.TotalRecommendCount)
 				}
+				if s.Sort == SRecentFinished {
+					assert.NotEmpty(t, i.Finished)
+				}
 			}
 		})
 

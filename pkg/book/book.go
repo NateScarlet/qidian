@@ -12,6 +12,7 @@ type Book struct {
 	SubCategory SubCategory
 	Tags        []string
 	LastUpdated time.Time
+	Finished    time.Time
 	CharCount   uint64
 	// only avaliable when search by bookmark
 	BookmarkCount       uint64
