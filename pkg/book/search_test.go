@@ -16,7 +16,13 @@ func TestSearch_simple(t *testing.T) {
 		NewSearch().SetSubCategory(SC未来世界),
 		NewSearch().SetPage(2),
 		NewSearch().SetPage(2).SetSort(SMonthRecommend),
+		NewSearch().SetSort(SWeekClick),
+		NewSearch().SetSort(SLastUpdated),
+		NewSearch().SetSort(SMonthRecommend),
+		NewSearch().SetSort(SRecentFinished),
 		NewSearch().SetSort(STotalBookmark),
+		NewSearch().SetSort(STotalRecommend),
+		NewSearch().SetSort(SWeekRecommend),
 	} {
 		s := c
 		t.Run(fmt.Sprintf("%+v", c), func(t *testing.T) {
@@ -35,6 +41,15 @@ func TestSearch_simple(t *testing.T) {
 				}
 				if s.Sort == "" {
 					assert.NotEmpty(t, i.LastUpdated)
+				}
+				if s.Sort == SWeekRecommend {
+					assert.NotEmpty(t, i.WeekRecommendCount)
+				}
+				if s.Sort == SMonthRecommend {
+					assert.NotEmpty(t, i.MonthRecommendCount)
+				}
+				if s.Sort == STotalRecommend {
+					assert.NotEmpty(t, i.TotalRecommendCount)
 				}
 			}
 		})

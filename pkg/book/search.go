@@ -152,6 +152,21 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 						if err != nil {
 							return false
 						}
+					case "周推荐":
+						book.WeekRecommendCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
+					case "月推荐":
+						book.MonthRecommendCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
+					case "总推荐":
+						book.TotalRecommendCount, err = parseCountSelection(s)
+						if err != nil {
+							return false
+						}
 					case "更新时间":
 						book.LastUpdated, err = parseTime(s.Text())
 						if err != nil {

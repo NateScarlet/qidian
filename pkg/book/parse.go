@@ -60,7 +60,10 @@ func parseCountSelection(doc *goquery.Selection) (ret uint64, err error) {
 var TZ, _ = time.LoadLocation("Asia/Shanghai")
 
 func parseTimeAt(s string, t time.Time) (ret time.Time, err error) {
-	if strings.HasPrefix(s, "昨日") {
+	if s == "刚刚" {
+		ret = t
+		return
+	} else if strings.HasPrefix(s, "昨日") {
 		t.AddDate(0, 0, -1)
 		var v time.Time
 		v, err = time.Parse("昨日15:04", s)

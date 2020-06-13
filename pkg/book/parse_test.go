@@ -77,6 +77,11 @@ func Test_parseTimeAt(t *testing.T) {
 			args: args{"昨日23:45"},
 			want: time.Date(2020, 06, 12, 23, 45, 00, 00, TZ),
 		},
+		{
+			name: "just now",
+			args: args{"刚刚"},
+			want: time.Date(2020, 06, 13, 12, 00, 00, 00, TZ),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -17,5 +17,6 @@ type Book struct {
 	BookmarkCount       uint64
 	MonthTicketCount    uint64
 	WeekRecommendCount  uint64
+	MonthRecommendCount uint64
 	TotalRecommendCount uint64
 }
