@@ -16,10 +16,8 @@ import (
 type Sort string
 
 const (
-	// SWeekClick search sort
-	SWeekClick Sort = "1"
 	// STotalRecommend search sort
-	STotalRecommend = "2"
+	STotalRecommend Sort = "2"
 	// SCharCount search sort
 	SCharCount = "3"
 	// SLastUpdated search sort

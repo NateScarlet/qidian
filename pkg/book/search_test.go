@@ -16,7 +16,6 @@ func TestSearch_simple(t *testing.T) {
 		NewSearch().SetSubCategory(SC未来世界),
 		NewSearch().SetPage(2),
 		NewSearch().SetPage(2).SetSort(SMonthRecommend),
-		NewSearch().SetSort(SWeekClick),
 		NewSearch().SetSort(SLastUpdated),
 		NewSearch().SetSort(SMonthRecommend),
 		NewSearch().SetSort(SRecentFinished),
