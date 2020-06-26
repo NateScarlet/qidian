@@ -21,7 +21,7 @@ func TestBook_Fetch(t *testing.T) {
 	assert.Equal(t, C玄幻, b.Category)
 	assert.Equal(t, SC异世大陆, b.SubCategory)
 	assert.Equal(t, time.Date(2003, 10, 23, 0, 0, 0, 0, TZ), b.LastUpdated)
-	assert.Equal(t, uint64(987300), b.CharCount)
+	assert.Equal(t, uint64(987300), b.WordCount)
 	assert.LessOrEqual(t, uint64(94200), b.TotalRecommendCount)
 	// assert.Equal(t, uint64(68), b.WeekRecommendCount)
 	assert.Equal(t, "心潮澎湃，无限幻想，迎风挥击千层浪，少年不败热血！", b.Summary)

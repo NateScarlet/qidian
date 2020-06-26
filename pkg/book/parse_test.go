@@ -29,7 +29,7 @@ func Test_parseCount(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parseCount(tt.args.v)
+			got, err := ParseCount(tt.args.v)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseCount() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -56,6 +56,16 @@ func Test_parseTimeAt(t *testing.T) {
 			name: "date",
 			args: args{"2020-06-07"},
 			want: time.Date(2020, 06, 07, 00, 00, 00, 00, TZ),
+		},
+		{
+			name: "date time",
+			args: args{"2020-06-07 10:20"},
+			want: time.Date(2020, 06, 07, 10, 20, 00, 00, TZ),
+		},
+		{
+			name: "short date time",
+			args: args{"06-07 10:20"},
+			want: time.Date(2020, 06, 07, 10, 20, 00, 00, TZ),
 		},
 		{
 			name: "relative minutes",

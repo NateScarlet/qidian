@@ -1,6 +1,6 @@
 {{ $root := . -}}
 
-// Code generated from category.go.gotmpl, DO NOT EDIT.
+// Code generated from {{templateFiles}}, DO NOT EDIT.
 
 package book
 
@@ -9,29 +9,40 @@ type Category string
 type SubCategory string
 
 const (
-{{- range $k, $v := .MainCategories}}
-    C{{$v}} Category = "{{$k}}"
+{{- range $k, $v := .mainCategories}}
+    C{{$v.name}}{{$v.site}} Category = "{{$k}}"
 {{- end -}}
-{{- range $k, $v := .SubCategories}}
-    SC{{$v.Name}} SubCategory = "{{$k}}"
+{{- range $k, $v := .subCategories}}
+    SC{{$v.name}}{{$v.site}} SubCategory = "{{$k}}"
 {{- end }}
 )
 
 func (c Category) String() string {
     switch c {
-{{- range $k, $v := .MainCategories}}
-    case C{{$v}}:
-        return "{{$v}}"
+{{- range $k, $v := .mainCategories}}
+    case C{{$v.name}}{{$v.site}}:
+        return "{{$v.name}}"
 {{- end }}
     }
     return ""
 }
 
-func CategoryByName(v string) Category {
-    switch v {
-{{- range $k, $v := .MainCategories}}
-    case "{{$v}}":
-        return C{{$v}}
+// Site for this category, "" for main site, "mm" for female site.
+func (c Category) Site() string {
+    switch c {
+{{- range $k, $v := .mainCategories}}
+    case C{{$v.name}}{{$v.site}}:
+        return "{{$v.site}}"
+{{- end }}
+    }
+    return ""
+}
+
+func CategoryByName(name, site string) Category {
+    switch {
+{{- range $k, $v := .mainCategories}}
+    case name == "{{$v.name}}" && site == "{{$v.site}}":
+        return C{{$v.name}}{{$v.site}}
 {{- end }}
     }
     return ""
@@ -39,9 +50,10 @@ func CategoryByName(v string) Category {
 
 func (sc SubCategory) Parent() Category {
     switch sc{
-{{- range $k, $v := .SubCategories}}
-    case SC{{$v.Name}}:
-        return C{{get $root.MainCategories $v.ParentID }}
+{{- range $k, $v := .subCategories}}
+    case SC{{$v.name}}{{$v.site}}:
+{{- $c := get $root.mainCategories $v.parentID  }}
+        return C{{$c.name}}{{$c.site}}
 {{- end }}
     }
     return ""
@@ -49,19 +61,31 @@ func (sc SubCategory) Parent() Category {
 
 func (sc SubCategory) String() string {
     switch sc {
-{{- range $k, $v := .SubCategories}}
-    case SC{{$v.Name}}:
-        return "{{$v.Name}}"
+{{- range $k, $v := .subCategories}}
+    case SC{{$v.name}}{{$v.site}}:
+        return "{{$v.name}}"
 {{- end }}
     }
     return ""
 }
 
-func SubCategoryByName(v string) SubCategory {
-    switch v {
-{{- range $k, $v := .SubCategories}}
-    case "{{$v.Name}}":
-        return SC{{$v.Name}}
+
+// Site for this sub-category, "" for main site, "mm" for female site.
+func (c SubCategory) Site() string {
+    switch c {
+{{- range $k, $v := .subCategories}}
+    case SC{{$v.name}}{{$v.site}}:
+        return "{{$v.site}}"
+{{- end }}
+    }
+    return ""
+}
+
+func SubCategoryByName(name, site string) SubCategory {
+    switch {
+{{- range $k, $v := .subCategories}}
+    case name == "{{$v.name}}" && site == "{{$v.site}}":
+        return SC{{$v.name}}{{$v.site}}
 {{- end }}
     }
     return ""

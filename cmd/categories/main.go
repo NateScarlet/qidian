@@ -15,23 +15,35 @@ import (
 type category struct {
 	id   string
 	name string
+	site string
 }
 
 func findCategories() (categories []category, err error) {
-	resp, err := http.Get("https://www.qidian.com/all")
+	var fetch = func(url, site string) (err error) {
+		resp, err := http.Get(url)
+		if err != nil {
+			return
+		}
+		defer resp.Body.Close()
+		doc, err := goquery.NewDocumentFromReader(resp.Body)
+		if err != nil {
+			return
+		}
+		doc.Find(`ul[type="category"] > li[data-id]`).Each(func(_ int, s *goquery.Selection) {
+			id, _ := s.Attr("data-id")
+			name := s.Find("a").Text()
+			categories = append(categories, category{id, name, site})
+		})
+		return
+	}
+	err = fetch("https://www.qidian.com/mm/all", "mm")
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	err = fetch("https://www.qidian.com/all", "")
 	if err != nil {
 		return
 	}
-	doc.Find(`ul[type="category"] > li[data-id]`).Each(func(_ int, s *goquery.Selection) {
-		id, _ := s.Attr("data-id")
-		name := s.Find("a").Text()
-		categories = append(categories, category{id, name})
-	})
 	return
 }
 
@@ -39,40 +51,58 @@ type subCategory struct {
 	parentID string
 	id       string
 	name     string
+	site     string
 }
 
 func findSubCategories(id string) (subCategories []subCategory, err error) {
-	resp, err := http.Get("https://www.qidian.com/all?chanId=" + id)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
-	if err != nil {
-		return
-	}
-	doc.Find(`.sub-type > dl:not(.hidden) > dd[data-subtype] > a`).Each(func(_ int, s *goquery.Selection) {
-		href, _ := s.Attr("href")
-		u, _ := url.Parse(href)
-		q := u.Query()
-		subCategories = append(subCategories, subCategory{
-			parentID: q.Get("chanId"),
-			id:       q.Get("subCateId"),
-			name:     s.Text(),
+	var fetch = func(template, site string) (err error) {
+		resp, err := http.Get(template + id)
+		if err != nil {
+			return
+		}
+		defer resp.Body.Close()
+		doc, err := goquery.NewDocumentFromReader(resp.Body)
+		if err != nil {
+			return
+		}
+		doc.Find(`.sub-type > dl:not(.hidden) > dd[data-subtype] > a`).Each(func(_ int, s *goquery.Selection) {
+			href, _ := s.Attr("href")
+			u, _ := url.Parse(href)
+			q := u.Query()
+			subCategories = append(subCategories, subCategory{
+				parentID: q.Get("chanId"),
+				id:       q.Get("subCateId"),
+				name:     s.Text(),
+				site:     site,
+			})
 		})
-	})
-
+		return
+	}
+	err = fetch("https://www.qidian.com/mm/all?chanId=", "mm")
+	if err != nil {
+		return
+	}
+	err = fetch("https://www.qidian.com/all?chanId=", "")
+	if err != nil {
+		return
+	}
 	return
 }
 
 type dict = map[string]interface{}
-type templateContextSubCategory struct {
-	ParentID string
-	Name     string
+type jsonCategory struct {
+	Name string `bson:"name" json:"name"`
+	Site string `bson:"site" json:"site"`
 }
-type templateContext struct {
-	MainCategories dict
-	SubCategories  dict
+
+type jsonSubcategory struct {
+	ParentID string `bson:"parentID" json:"parentID"`
+	Name     string `bson:"name" json:"name"`
+	Site     string `bson:"site" json:"site"`
+}
+type jsonData struct {
+	MainCategories dict `bson:"mainCategories" json:"mainCategories"`
+	SubCategories  dict `bson:"subCategories" json:"subCategories"`
 }
 
 func main() {
@@ -80,7 +110,7 @@ func main() {
 	flag.StringVar(&output, "o", "", "output")
 	flag.Parse()
 
-	var c = &templateContext{
+	var c = &jsonData{
 		MainCategories: dict{},
 		SubCategories:  dict{},
 	}
@@ -89,15 +119,19 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, i := range cate {
-		c.MainCategories[i.id] = i.name
+		c.MainCategories[i.id] = jsonCategory{
+			Name: i.name,
+			Site: i.site,
+		}
 		subCate, err := findSubCategories(i.id)
 		if err != nil {
 			log.Fatal(err)
 		}
 		for _, j := range subCate {
-			c.SubCategories[j.id] = templateContextSubCategory{
+			c.SubCategories[j.id] = jsonSubcategory{
 				ParentID: j.parentID,
 				Name:     j.name,
+				Site:     j.site,
 			}
 		}
 	}

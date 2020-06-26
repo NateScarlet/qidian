@@ -14,7 +14,9 @@ import (
 
 // Book model
 type Book struct {
-	ID     string
+	ID string
+	// "" for main site,  "mm" for female site
+	Site   string
 	Title  string
 	Author string
 	// short description
@@ -26,7 +28,7 @@ type Book struct {
 	Tags         []string
 	LastUpdated  time.Time
 	Finished     time.Time
-	CharCount    uint64
+	WordCount    uint64
 	// only avaliable when search by bookmark
 	BookmarkCount       uint64
 	MonthTicketCount    uint64
@@ -110,17 +112,17 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		}
 		c += parent.Next().Text()
 		if strings.HasSuffix(c, "字") {
-			b.CharCount, err = parseCount(c[:len(c)-len("字")])
+			b.WordCount, err = ParseCount(c[:len(c)-len("字")])
 			if err != nil {
 				return false
 			}
 		} else if strings.HasSuffix(c, "总推荐") {
-			b.TotalRecommendCount, err = parseCount(c[:len(c)-len("总推荐")])
+			b.TotalRecommendCount, err = ParseCount(c[:len(c)-len("总推荐")])
 			if err != nil {
 				return false
 			}
 		} else if strings.HasSuffix(c, "周推荐") {
-			b.WeekRecommendCount, err = parseCount(c[:len(c)-len("周推荐")])
+			b.WeekRecommendCount, err = ParseCount(c[:len(c)-len("周推荐")])
 			if err != nil {
 				return false
 			}
@@ -132,7 +134,7 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	}
 
 	// LastUpdated
-	b.LastUpdated, err = parseTime(stateElem.Find(".update .time").Text())
+	b.LastUpdated, err = ParseTime(stateElem.Find(".update .time").Text())
 	if err != nil {
 		return err
 	}

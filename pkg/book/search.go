@@ -3,11 +3,9 @@ package book
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -28,7 +26,7 @@ const (
 
 // Search options
 type Search struct {
-	// Keyword     *string
+	Site        string
 	Sort        Sort
 	Page        int
 	Category    Category
@@ -55,18 +53,23 @@ func (s *Search) SetSort(v Sort) *Search {
 // SetCategory then returns self.
 func (s *Search) SetCategory(v Category) *Search {
 	s.Category = v
+	s.Site = v.Site()
 	return s
 }
 
 // SetSubCategory and category then returns self.
 func (s *Search) SetSubCategory(v SubCategory) *Search {
 	s.SubCategory = v
-	s.Category = v.Parent()
+	s.SetCategory(v.Parent())
 	return s
 }
 
 func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
-	u, err := url.Parse("https://www.qidian.com/all")
+	var base = "https://www.qidian.com"
+	if s.Site != "" {
+		base += "/" + s.Site
+	}
+	u, err := url.Parse(base + "/all")
 	if err != nil {
 		return
 	}
@@ -101,85 +104,9 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 	table := doc.
 		Find("table.rank-table-list")
 	if table.Length() == 0 {
-		h, _ := doc.Html()
-		fmt.Println(h)
 		return nil, errors.New("can not found result table")
 	}
-	var columns = make([]string, 0)
-	table.Find("thead > tr > th").Each(func(i int, s *goquery.Selection) {
-		columns = append(columns, s.Text())
-	})
-	ret = make([]Book, 0, 50)
-	table.
-		Find("tbody > tr").
-		EachWithBreak(func(i int, s *goquery.Selection) bool {
-			var book = Book{}
-			s.
-				ChildrenFiltered("td").
-				EachWithBreak(func(i int, s *goquery.Selection) bool {
-					if i >= len(columns) {
-						return false
-					}
-					switch columns[i] {
-					case "类别":
-						parts := strings.SplitN(strings.Trim(s.Text(), "「」"), "·", 2)
-						if len(parts) != 2 {
-							err = errors.New("unexpected category format")
-							return false
-						}
-						book.Category = CategoryByName(parts[0])
-						book.SubCategory = SubCategoryByName(parts[1])
-					case "小说书名":
-						book.Title = s.Text()
-						book.ID, _ = s.Find("a").Attr("data-bid")
-					case "小说作者":
-						book.Author = s.Text()
-					case "字数":
-						book.CharCount, err = parseSelectionCount(s)
-						if err != nil {
-							return false
-						}
-					case "总收藏":
-						book.BookmarkCount, err = parseSelectionCount(s)
-						if err != nil {
-							return false
-						}
-					case "周推荐":
-						book.WeekRecommendCount, err = parseSelectionCount(s)
-						if err != nil {
-							return false
-						}
-					case "月推荐":
-						book.MonthRecommendCount, err = parseSelectionCount(s)
-						if err != nil {
-							return false
-						}
-					case "总推荐":
-						book.TotalRecommendCount, err = parseSelectionCount(s)
-						if err != nil {
-							return false
-						}
-					case "更新时间":
-						book.LastUpdated, err = parseTime(s.Text())
-						if err != nil {
-							return false
-						}
-					case "完本时间":
-						book.Finished, err = parseTime(s.Text())
-						if err != nil {
-							return false
-						}
-					}
-					return true
-				})
-			if err != nil {
-				return false
-			}
-			ret = append(ret, book)
-			return true
-		})
-	return
-
+	return parseTable(table, nil, s.Site)
 }
 
 // Execute search

@@ -1,8 +1,12 @@
 {
     "version": "0.1",
     "words": [
-        "sfnt",
         "deobfuscate",
-        "goquery"
+        "goquery",
+        "gotmpl",
+        "qidian",
+        "RTVIP",
+        "sfnt",
+        "VIPMM"
     ]
 }
