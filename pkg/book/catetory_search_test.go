@@ -9,19 +9,19 @@ import (
 	"golang.org/x/net/context"
 )
 
-func TestSearch_simple(t *testing.T) {
-	for _, c := range []*Search{
-		NewSearch(),
-		NewSearch().SetCategory(C科幻),
-		NewSearch().SetSubCategory(SC未来世界),
-		NewSearch().SetPage(2),
-		NewSearch().SetPage(2).SetSort(SMonthRecommend),
-		NewSearch().SetSort(SLastUpdated),
-		NewSearch().SetSort(SMonthRecommend),
-		NewSearch().SetSort(SRecentFinished),
-		NewSearch().SetSort(STotalBookmark),
-		NewSearch().SetSort(STotalRecommend),
-		NewSearch().SetSort(SWeekRecommend),
+func TestCategorySearch_simple(t *testing.T) {
+	for _, c := range []*CategorySearch{
+		NewCategorySearch(),
+		NewCategorySearch().SetCategory(C科幻),
+		NewCategorySearch().SetSubCategory(SC未来世界),
+		NewCategorySearch().SetPage(2),
+		NewCategorySearch().SetPage(2).SetSort(SMonthRecommend),
+		NewCategorySearch().SetSort(SLastUpdated),
+		NewCategorySearch().SetSort(SMonthRecommend),
+		NewCategorySearch().SetSort(SRecentFinished),
+		NewCategorySearch().SetSort(STotalBookmark),
+		NewCategorySearch().SetSort(STotalRecommend),
+		NewCategorySearch().SetSort(SWeekRecommend),
 	} {
 		s := c
 		t.Run(fmt.Sprintf("%+v", c), func(t *testing.T) {

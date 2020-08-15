@@ -24,8 +24,8 @@ const (
 	STotalBookmark       = "11"
 )
 
-// Search options
-type Search struct {
+// CategorySearch use https://www.qidian.com/all page
+type CategorySearch struct {
 	Site        string
 	Sort        Sort
 	Page        int
@@ -33,38 +33,39 @@ type Search struct {
 	SubCategory SubCategory
 }
 
-// NewSearch create a new search for function chaining.
-func NewSearch() *Search {
-	return &Search{}
+// NewCategorySearch create a new search for function chaining.
+func NewCategorySearch() *CategorySearch {
+	return &CategorySearch{}
 }
 
 // SetPage then returns self.
-func (s *Search) SetPage(v int) *Search {
+func (s *CategorySearch) SetPage(v int) *CategorySearch {
 	s.Page = v
 	return s
 }
 
 // SetSort then returns self.
-func (s *Search) SetSort(v Sort) *Search {
+func (s *CategorySearch) SetSort(v Sort) *CategorySearch {
 	s.Sort = v
 	return s
 }
 
 // SetCategory then returns self.
-func (s *Search) SetCategory(v Category) *Search {
+func (s *CategorySearch) SetCategory(v Category) *CategorySearch {
 	s.Category = v
 	s.Site = v.Site()
 	return s
 }
 
 // SetSubCategory and category then returns self.
-func (s *Search) SetSubCategory(v SubCategory) *Search {
+func (s *CategorySearch) SetSubCategory(v SubCategory) *CategorySearch {
 	s.SubCategory = v
 	s.SetCategory(v.Parent())
 	return s
 }
 
-func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
+// Execute search
+func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	var base = "https://www.qidian.com"
 	if s.Site != "" {
 		base += "/" + s.Site
@@ -107,9 +108,4 @@ func (s Search) excuteByAllPage(ctx context.Context) (ret []Book, err error) {
 		return nil, errors.New("can not found result table")
 	}
 	return parseTable(table, nil, s.Site)
-}
-
-// Execute search
-func (s Search) Execute(ctx context.Context) ([]Book, error) {
-	return s.excuteByAllPage(ctx)
 }
