@@ -15,13 +15,71 @@ type Sort string
 
 // Sort for search
 const (
-	STotalRecommend Sort = "2"
-	SCharCount           = "3"
-	SLastUpdated         = "5"
-	SRecentFinished      = "6"
-	SWeekRecommend       = "9"
-	SMonthRecommend      = "10"
-	STotalBookmark       = "11"
+	SortTotalRecommend Sort = "2"
+	SortCharCount      Sort = "3"
+	SortLastUpdated    Sort = "5"
+	SortRecentFinished Sort = "6"
+	SortWeekRecommend  Sort = "9"
+	SortMonthRecommend Sort = "10"
+	SortTotalBookmark  Sort = "11"
+)
+
+// State for book
+type State string
+
+// State for book
+const (
+	StateAll      State = ""
+	StateOnGoing  State = "1"
+	StateFinished State = "2"
+)
+
+// Sign for book
+type Sign string
+
+// Sign for book
+const (
+	// 全部作品
+	SignAll Sign = ""
+	// 签约作品
+	SignSigned Sign = "1"
+	// 精品小说
+	SignChoicest Sign = "2"
+)
+
+// VIP state for book
+type VIP string
+
+// VIP state for book
+const (
+	VIPAll   VIP = ""
+	VIPFalse VIP = "1"
+	VIPTrue  VIP = "2"
+)
+
+// Update for book
+type Update string
+
+// Update for book
+const (
+	UpdateAll         Update = ""
+	UpdateIn3Day      Update = "1"
+	UpdateIn7Day      Update = "2"
+	UpdateInHalfMonth Update = "3"
+	UpdateInMonth     Update = "4"
+)
+
+// Size for book
+type Size string
+
+// Size for book
+const (
+	SizeAll          Size = ""
+	SizeLt300k       Size = "1"
+	SizeGt300kLt500k Size = "2"
+	SizeGt500kLt1m   Size = "3"
+	SizeGt1mLt2m     Size = "4"
+	SizeGt2m         Size = "5"
 )
 
 // CategorySearch use https://www.qidian.com/all page
@@ -31,6 +89,11 @@ type CategorySearch struct {
 	Page        int
 	Category    Category
 	SubCategory SubCategory
+	State       State
+	Sign        Sign
+	Update      Update
+	VIP         VIP
+	Size        Size
 }
 
 // NewCategorySearch create a new search for function chaining.
@@ -64,6 +127,36 @@ func (s *CategorySearch) SetSubCategory(v SubCategory) *CategorySearch {
 	return s
 }
 
+// SetState then returns self.
+func (s *CategorySearch) SetState(v State) *CategorySearch {
+	s.State = v
+	return s
+}
+
+// SetSign then returns self.
+func (s *CategorySearch) SetSign(v Sign) *CategorySearch {
+	s.Sign = v
+	return s
+}
+
+// SetUpdate then returns self.
+func (s *CategorySearch) SetUpdate(v Update) *CategorySearch {
+	s.Update = v
+	return s
+}
+
+// SetVIP then returns self.
+func (s *CategorySearch) SetVIP(v VIP) *CategorySearch {
+	s.VIP = v
+	return s
+}
+
+// SetSize then returns self.
+func (s *CategorySearch) SetSize(v Size) *CategorySearch {
+	s.Size = v
+	return s
+}
+
 // Execute search
 func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	var base = "https://www.qidian.com"
@@ -87,6 +180,21 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	}
 	if s.SubCategory != "" {
 		q.Set("subCateId", string(s.SubCategory))
+	}
+	if s.State != "" {
+		q.Set("action", string(s.State))
+	}
+	if s.Sign != "" {
+		q.Set("sign", string(s.Sign))
+	}
+	if s.Update != "" {
+		q.Set("update", string(s.Update))
+	}
+	if s.VIP != "" {
+		q.Set("vip", string(s.VIP))
+	}
+	if s.Size != "" {
+		q.Set("size", string(s.Size))
 	}
 	u.RawQuery = q.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
