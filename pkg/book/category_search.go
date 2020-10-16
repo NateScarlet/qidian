@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/NateScarlet/qidian/pkg/client"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -211,7 +212,7 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	if err != nil {
 		return
 	}
-	res, err := http.DefaultClient.Do(req)
+	res, err := client.For(ctx).Do(req)
 	if err != nil {
 		return
 	}

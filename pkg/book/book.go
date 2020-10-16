@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NateScarlet/qidian/pkg/client"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -52,7 +53,7 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	if err != nil {
 		return err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.For(ctx).Do(req)
 	if err != nil {
 		return err
 	}
