@@ -153,18 +153,6 @@ func nodesText(s []*html.Node) (ret string) {
 	return strings.TrimSpace(ret)
 }
 
-// ColumnDataType returned by column parser
-type ColumnDataType int
-
-// Column data types
-const (
-	CDTUnknown ColumnDataType = iota
-	CDTTitle
-	CDTAuthor
-	CDTCategory
-	CDTBookmark
-)
-
 // ColumnParser parse data type from column title.
 type ColumnParser interface {
 	// Parse title to a column data type
