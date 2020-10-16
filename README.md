@@ -37,7 +37,7 @@ client.With(ctx, new(http.Client)) // context.Context
 
 // 分类搜索
 book.NewCategorySearch().
-    SetSubCategory(SC未来世界).
+    SetSubCategory(book.SC未来世界).
     SetSize(book.SizeGt300kLt500k).
     SetSort(book.SortWeekRecommend).
     SetUpdate(book.UpdateIn3Day).
