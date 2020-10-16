@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NateScarlet/qidian/pkg/author"
 	"github.com/NateScarlet/qidian/pkg/client"
 	"github.com/PuerkitoBio/goquery"
 )
@@ -19,7 +20,7 @@ type Book struct {
 	// "" for main site,  "mm" for female site
 	Site   string
 	Title  string
-	Author string
+	Author author.Author
 	// short description
 	Summary string
 	// long description
@@ -66,9 +67,12 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	stateElem := doc.Find(".book-state")
 
 	// Author
-	writerElem := introElem.Find(".writer")
+	writerElem := introElem.Find("a.writer")
 	writerElem.Parent().Remove()
-	b.Author = writerElem.Text()
+	b.Author.Name = writerElem.Text()
+	if href := writerElem.AttrOr("href", ""); strings.HasPrefix(href, "//me.qidian.com/authorIndex.aspx?id=") {
+		b.Author.ID = href[36:]
+	}
 
 	// Title
 	b.Title = strings.TrimSpace(introElem.Find("h1").Text())

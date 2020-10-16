@@ -191,7 +191,11 @@ func defaultColumnParser(book *Book, index int, th *goquery.Selection, s *goquer
 		book.Title = s.Text()
 		book.ID, _ = s.Find("a").Attr("data-bid")
 	case "小说作者":
-		book.Author = s.Text()
+		a := s.Find("a")
+		book.Author.Name = a.Text()
+		if href := a.AttrOr("href", ""); strings.HasPrefix(href, "//my.qidian.com/author/") {
+			book.Author.ID = href[23:]
+		}
 	case "字数":
 		book.WordCount, err = ParseSelectionCount(s)
 		if err != nil {

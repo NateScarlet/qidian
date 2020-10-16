@@ -47,7 +47,8 @@ func TestCategorySearch_simple(t *testing.T) {
 			for _, i := range res {
 				assert.NotEmpty(t, i.ID)
 				assert.NotEmpty(t, i.Title)
-				assert.NotEmpty(t, i.Author)
+				assert.NotEmpty(t, i.Author.Name)
+				assert.NotEmpty(t, i.Author.ID)
 				assert.NotEmpty(t, i.Category)
 				assert.NotEmpty(t, i.SubCategory)
 				assert.NotEmpty(t, i.WordCount)
