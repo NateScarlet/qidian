@@ -90,6 +90,7 @@ type CategorySearch struct {
 	Category    Category
 	SubCategory SubCategory
 	State       State
+	Tag         string
 	Sign        Sign
 	Update      Update
 	VIP         VIP
@@ -157,6 +158,12 @@ func (s *CategorySearch) SetSize(v Size) *CategorySearch {
 	return s
 }
 
+// SetTag then returns self.
+func (s *CategorySearch) SetTag(v string) *CategorySearch {
+	s.Tag = v
+	return s
+}
+
 // Execute search
 func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	var base = "https://www.qidian.com"
@@ -195,6 +202,9 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	}
 	if s.Size != "" {
 		q.Set("size", string(s.Size))
+	}
+	if s.Tag != "" {
+		q.Set("tag", s.Tag)
 	}
 	u.RawQuery = q.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)

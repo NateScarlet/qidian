@@ -37,6 +37,7 @@ func TestCategorySearch_simple(t *testing.T) {
 		NewCategorySearch().SetSize(SizeGt2m),
 		NewCategorySearch().SetVIP(VIPFalse),
 		NewCategorySearch().SetVIP(VIPTrue),
+		NewCategorySearch().SetTag("变身"),
 	} {
 		s := c
 		t.Run(fmt.Sprintf("%+v", c), func(t *testing.T) {
