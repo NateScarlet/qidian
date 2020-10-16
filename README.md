@@ -27,7 +27,6 @@ import (
     "github.com/NateScarlet/qidian/pkg/client"
 )
 
-// 默认客户端用环境变量 `PIXIV_PHPSESSID` 登录。
 ctx := context.Background()
 
 // 默认使用 http.DefaultClient
