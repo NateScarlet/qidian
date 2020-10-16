@@ -18,7 +18,6 @@ func TestRank_Fetch(t *testing.T) {
 		shouldHasMonthlyRecommendation bool
 		shouldHasTotalRecommendation   bool
 		shouldHasBookmark              bool
-		shouldHasRecentUpdated         bool
 	}{
 		{
 			name: "monthly-ticket",
@@ -255,6 +254,7 @@ func TestRank_Fetch(t *testing.T) {
 				assert.NotEmpty(t, book.Title)
 				assert.NotEmpty(t, book.Category)
 				assert.Equal(t, c.rank.Type.Site, book.Site)
+				assert.NotEmpty(t, book.LastUpdated)
 				if c.shouldHasMonthlyTicket {
 					assert.NotEmpty(t, book.MonthTicketCount)
 				}
@@ -269,9 +269,6 @@ func TestRank_Fetch(t *testing.T) {
 				}
 				if c.shouldHasBookmark {
 					assert.NotEmpty(t, book.BookmarkCount)
-				}
-				if c.shouldHasRecentUpdated {
-					// TODO: WIP
 				}
 			}
 		})
