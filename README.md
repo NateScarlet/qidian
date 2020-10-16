@@ -1,5 +1,6 @@
 # qidian
 
+[![godev](https://img.shields.io/static/v1?label=godev&message=reference&color=00add8)](https://pkg.go.dev/github.com/NateScarlet/qidian/pkg)
 [![build status](https://github.com/NateScarlet/qidian/workflows/Go/badge.svg)](https://github.com/NateScarlet/qidian/actions)
 
 起点中文网 go 客户端，基于网页版页面提取。
