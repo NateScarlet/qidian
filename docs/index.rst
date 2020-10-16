@@ -7,3 +7,5 @@
 
    /book/*
    /font_deobfuscate
+   author
+   user

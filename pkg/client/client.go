@@ -10,7 +10,7 @@ type contextKey struct{}
 
 // For get client from context.
 func For(ctx context.Context) *http.Client {
-	v := ctx.Value(contextKey{}).(*http.Client)
+	v, _ := ctx.Value(contextKey{}).(*http.Client)
 	if v == nil {
 		return http.DefaultClient
 	}
