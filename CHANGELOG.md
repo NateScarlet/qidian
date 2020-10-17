@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/NateScarlet/qidian/compare/v0.1.1...v0.1.2) (2020-10-17)
+
+
+### Features
+
+* fetch book cover url ([845525d](https://github.com/NateScarlet/qidian/commit/845525d2298c4a8ae56aab3d64add106862508d8))
+
 ### [0.1.1](https://github.com/NateScarlet/qidian/compare/v0.1.0...v0.1.1) (2020-10-16)
 
 ## 0.1.0 (2020-10-16)
