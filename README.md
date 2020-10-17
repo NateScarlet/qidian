@@ -54,7 +54,7 @@ b.Author.Name // "宝剑锋"
 
 // 书籍排行榜
 book.Rank{
-    Type:  RTMonthlyTicket,
+    Type:  book.RTMonthlyTicket,
     Year:  2020,
     Month: time.January,
 }.Fetch(ctx) // []book.Book, error
