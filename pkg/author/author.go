@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/NateScarlet/qidian/pkg/client"
+	"github.com/NateScarlet/qidian/pkg/util"
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 )
@@ -61,10 +62,7 @@ func (a *Author) Fetch(ctx context.Context) (err error) {
 	}
 
 	//
-	a.AvatarURL = doc.Find("img.header-avatar-img").AttrOr("src", "")
-	if a.AvatarURL != "" && a.AvatarURL[0] == '/' {
-		a.AvatarURL = "https:" + a.AvatarURL
-	}
+	a.AvatarURL = util.AbsoluteURL(doc.Find("img.header-avatar-img").AttrOr("src", ""))
 
 	//
 	a.Biography = strings.Trim(doc.Find(".header-msg-desc").Text(), " \n")

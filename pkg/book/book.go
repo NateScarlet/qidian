@@ -11,6 +11,7 @@ import (
 
 	"github.com/NateScarlet/qidian/pkg/author"
 	"github.com/NateScarlet/qidian/pkg/client"
+	"github.com/NateScarlet/qidian/pkg/util"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -18,9 +19,10 @@ import (
 type Book struct {
 	ID string
 	// "" for main site,  "mm" for female site
-	Site   string
-	Title  string
-	Author author.Author
+	Site     string
+	Title    string
+	Author   author.Author
+	CoverURL string
 	// short description
 	Summary string
 	// long description
@@ -63,11 +65,11 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	if err != nil {
 		return err
 	}
-	introElem := doc.Find(".book-info").Clone()
+	infoElem := doc.Find(".book-info").Clone()
 	stateElem := doc.Find(".book-state")
 
 	// Author
-	writerElem := introElem.Find("a.writer")
+	writerElem := infoElem.Find("a.writer")
 	writerElem.Parent().Remove()
 	b.Author.Name = writerElem.Text()
 	if href := writerElem.AttrOr("href", ""); strings.HasPrefix(href, "//me.qidian.com/authorIndex.aspx?id=") {
@@ -75,10 +77,10 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	}
 
 	// Title
-	b.Title = strings.TrimSpace(introElem.Find("h1").Text())
+	b.Title = strings.TrimSpace(infoElem.Find("h1").Text())
 
 	// Categories
-	introElem.Find("a").Each(func(i int, s *goquery.Selection) {
+	infoElem.Find("a").Each(func(i int, s *goquery.Selection) {
 		href, ok := s.Attr("href")
 		if !ok {
 			return
@@ -95,8 +97,11 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		}
 	})
 
+	// Cover
+	b.CoverURL = util.AbsoluteURL(doc.Find("#bookImg > img").AttrOr("src", ""))
+
 	// Tags
-	tagElemList := introElem.Find(".tag > span").
+	tagElemList := infoElem.Find(".tag > span").
 		AddSelection(stateElem.Find(".tags"))
 	b.Tags = make([]string, 0, tagElemList.Length())
 	tagElemList.Each(func(i int, s *goquery.Selection) {
@@ -104,11 +109,11 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	})
 
 	// Introduction
-	b.Summary = introElem.Find(".intro").Text()
+	b.Summary = infoElem.Find(".intro").Text()
 	b.Introduction = nodesText(doc.Find(".book-info-detail .book-intro").Nodes)
 
 	// Count
-	introElem.Find("style").EachWithBreak(func(i int, s *goquery.Selection) bool {
+	infoElem.Find("style").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		var parent = s.Parent()
 		var c string
 		c, err = deobfuscate(parent)

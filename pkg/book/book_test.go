@@ -21,6 +21,7 @@ func TestBook_Fetch(t *testing.T) {
 	assert.Equal(t, []string{"连载", "签约", "VIP", "学院流", "特种兵", "轻松"}, b.Tags)
 	assert.Equal(t, C玄幻, b.Category)
 	assert.Equal(t, SC异世大陆, b.SubCategory)
+	assert.Equal(t, "https://bookcover.yuewen.com/qdbimg/349573/1/180", b.CoverURL)
 	assert.Equal(t, time.Date(2003, 10, 23, 0, 0, 0, 0, TZ), b.LastUpdated)
 	assert.Equal(t, uint64(987300), b.WordCount)
 	assert.LessOrEqual(t, uint64(94200), b.TotalRecommendCount)
