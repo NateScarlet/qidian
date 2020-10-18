@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/NateScarlet/qidian/compare/v0.1.5...v0.1.6) (2020-10-18)
+
+
+### Bug Fixes
+
+* error when fetch free book ([7bc141a](https://github.com/NateScarlet/qidian/commit/7bc141a2b287314138806957399e7d55720020aa))
+
 ### [0.1.5](https://github.com/NateScarlet/qidian/compare/v0.1.4...v0.1.5) (2020-10-18)
 
 
