@@ -150,9 +150,12 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	}
 
 	// MonthTicket
-	b.MonthTicketCount, err = strconv.ParseUint(doc.Find("#monthCount").Text(), 10, 64)
-	if err != nil {
-		return err
+	monthlyTickerEl := doc.Find("#monthCount")
+	if monthlyTickerEl.Length() > 0 {
+		b.MonthTicketCount, err = strconv.ParseUint(monthlyTickerEl.Text(), 10, 64)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
