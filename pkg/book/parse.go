@@ -1,7 +1,6 @@
 package book
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -44,7 +43,8 @@ func deobfuscate(doc *goquery.Selection) (ret string, err error) {
 	style = html.UnescapeString(style)
 	match := fontPattern.FindStringSubmatch(style)
 	if match == nil {
-		err = errors.New("can not found font url")
+		h, _ := doc.Html()
+		err = fmt.Errorf("qidian: can not found font url: %s", h)
 		return
 	}
 	var f *sfnt.Font

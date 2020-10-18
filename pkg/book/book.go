@@ -49,7 +49,7 @@ func (b Book) URL() string {
 // Fetch book from info page.
 func (b *Book) Fetch(ctx context.Context) (err error) {
 	if b.ID == "" {
-		return errors.New("empty book id")
+		return errors.New("qidian: empty book id")
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", b.URL(), nil)

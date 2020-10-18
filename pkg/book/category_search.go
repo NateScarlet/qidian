@@ -2,7 +2,7 @@ package book
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -224,7 +224,7 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	table := doc.
 		Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, errors.New("can not found result table")
+		return nil, fmt.Errorf("qidian: can not found result table: %s", u.String())
 	}
 	return parseTable(table, nil, s.Site)
 }
