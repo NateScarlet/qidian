@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/NateScarlet/qidian/compare/v0.1.4...v0.1.5) (2020-10-18)
+
+
+### Features
+
+* add (book.Rank).URL method ([9ea54f8](https://github.com/NateScarlet/qidian/commit/9ea54f84f9f7b1aec5de4203f79baa1449986f28))
+
 ### [0.1.4](https://github.com/NateScarlet/qidian/compare/v0.1.3...v0.1.4) (2020-10-18)
 
 
