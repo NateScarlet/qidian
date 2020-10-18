@@ -2,6 +2,7 @@ package book
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -211,11 +212,11 @@ type Rank struct {
 	Month    time.Month
 }
 
-// Fetch rank, return 50 book in order.
-func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
+// URL of rank page.
+func (r Rank) URL() string {
 	var u, err = url.Parse(r.Type.URL)
 	if err != nil {
-		return nil, err
+		return ""
 	}
 	var q = u.Query()
 	q.Set("style", "2")
@@ -229,8 +230,16 @@ func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
 		q.Set("month", fmt.Sprintf("%02d", r.Month))
 	}
 	u.RawQuery = q.Encode()
+	return u.String()
+}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+// Fetch rank, return 50 book in order.
+func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
+	var u = r.URL()
+	if u == "" {
+		return nil, errors.New("qidian: invalid rank url")
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +255,7 @@ func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
 	table := doc.
 		Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", u.String())
+		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", u)
 	}
 	return parseTable(table, r.Type.ColumnParser, r.Type.Site)
 }
