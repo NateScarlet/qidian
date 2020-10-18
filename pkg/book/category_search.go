@@ -165,15 +165,15 @@ func (s *CategorySearch) SetTag(v string) *CategorySearch {
 	return s
 }
 
-// Execute search
-func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
-	var base = "https://www.qidian.com"
-	if s.Site != "" {
-		base += "/" + s.Site
+// URL of search result page.
+func (s CategorySearch) URL() string {
+	u := url.URL{
+		Scheme: "https",
+		Host:   "www.qidian.com",
+		Path:   "all",
 	}
-	u, err := url.Parse(base + "/all")
-	if err != nil {
-		return
+	if s.Site != "" {
+		u.Path = s.Site + "/" + u.Path
 	}
 	q := u.Query()
 	q.Set("style", "2")
@@ -208,7 +208,13 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 		q.Set("tag", s.Tag)
 	}
 	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	return u.String()
+}
+
+// Execute search
+func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
+	u := s.URL()
+	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
 	if err != nil {
 		return
 	}
@@ -224,7 +230,7 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	table := doc.
 		Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: can not found result table: %s", u.String())
+		return nil, fmt.Errorf("qidian: can not found result table: %s", u)
 	}
 	return parseTable(table, nil, s.Site)
 }
