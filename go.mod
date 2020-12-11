@@ -3,7 +3,7 @@ module github.com/NateScarlet/qidian
 go 1.13
 
 require (
-	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/PuerkitoBio/goquery v1.6.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e
