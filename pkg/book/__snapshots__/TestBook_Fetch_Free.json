@@ -1,0 +1,42 @@
+{
+  "$Book": {
+    "Author": {
+      "$Author": {
+        "AvatarURL": "",
+        "Biography": "",
+        "ID": "4921",
+        "Name": "唐家三少",
+        "UserID": ""
+      }
+    },
+    "BookmarkCount": "*count*",
+    "Category": {
+      "$Category": "1"
+    },
+    "CoverURL": "https://bookcover.yuewen.com/qdbimg/349573/8361/180",
+    "Finished": {
+      "$Time": "0001-01-01 00:00:00 +0000 UTC"
+    },
+    "ID": "8361",
+    "Introduction": "一个懒惰的少年，因性格原因选学了无人问津的光系魔法，却无意中踏近了命运的巨轮，一步一步的成为了传说中的大魔导师。正是在他的努力下结束了东西大陆的分界，让整个大陆不再有种族之分，成为了后世各族共尊的光之子。",
+    "LastUpdated": {
+      "$Time": "2008-01-14 00:00:00 +0800 CST"
+    },
+    "MonthRecommendCount": "*count*",
+    "MonthTicketCount": "*count*",
+    "Site": "",
+    "SubCategory": {
+      "$SubCategory": "38"
+    },
+    "Summary": "魔兽践踏，巨龙咆哮，巫师诅咒，魔法璀璨之光照耀知识灯塔！",
+    "Tags": [
+      "完本",
+      "签约",
+      "免费"
+    ],
+    "Title": "光之子",
+    "TotalRecommendCount": "*count*",
+    "WeekRecommendCount": "*count*",
+    "WordCount": "*count*"
+  }
+}
