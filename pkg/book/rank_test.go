@@ -247,7 +247,7 @@ func TestRank_Fetch(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			books, err := c.rank.Fetch(context.Background())
 			require.NoError(t, err)
-			assert.Len(t, books, 50)
+			assert.NotEmpty(t, books)
 
 			for _, book := range books {
 				assert.NotEmpty(t, book.ID)
