@@ -43,7 +43,7 @@ var (
 		URL: "https://www.qidian.com/rank/fengyun",
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
-			case "月票榜":
+			case "月票榜", "起点月票榜":
 				book.MonthTicketCount, err = ParseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
