@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/NateScarlet/qidian/compare/v0.1.6...v0.1.7) (2021-01-13)
+
+
+### Features
+
+* use fixed timezone ([a268cf0](https://github.com/NateScarlet/qidian/commit/a268cf04eeb981ef11999c971b2cda4bd1b10d69))
+
+
+### Bug Fixes
+
+* handle book table column name change ([5ab29b0](https://github.com/NateScarlet/qidian/commit/5ab29b0a803254e2b6b736f2a2cda9e166c60c0f))
+
 ### [0.1.6](https://github.com/NateScarlet/qidian/compare/v0.1.5...v0.1.6) (2020-10-18)
 
 
