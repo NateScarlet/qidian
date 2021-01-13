@@ -67,8 +67,8 @@ func ParseSelectionCount(doc *goquery.Selection) (ret uint64, err error) {
 	return
 }
 
-// TZ is timezone used to parse timezone, defaults to Asia/Shanghai.
-var TZ, _ = time.LoadLocation("Asia/Shanghai")
+// TZ is timezone used to parse timezone, defaults to china standard time.
+var TZ = time.FixedZone("CST", 8*60*60)
 
 func parseTimeAt(s string, t time.Time) (ret time.Time, err error) {
 	switch {
