@@ -28,6 +28,14 @@ func TestRank_Fetch(t *testing.T) {
 			shouldHasMonthlyTicket: true,
 		},
 		{
+			name: "monthly-ticket-page2",
+			rank: Rank{
+				Type: RTMonthlyTicket,
+				Page: 2,
+			},
+			shouldHasMonthlyTicket: true,
+		},
+		{
 			name: "monthly-ticket-mm",
 			rank: Rank{
 				Type: RTMonthlyTicketMM,

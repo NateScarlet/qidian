@@ -208,6 +208,7 @@ type Rank struct {
 	Type     RankType
 	Category Category
 	Year     int
+	Page     int
 	Month    time.Month
 }
 
@@ -227,6 +228,9 @@ func (r Rank) URL() string {
 		u.Path += fmt.Sprintf("year%d-month%02d/", r.Year, r.Month)
 	} else if r.Month != 0 {
 		u.Path += fmt.Sprintf("month%02d/", r.Month)
+	}
+	if r.Page > 1 {
+		u.Path += fmt.Sprintf("page%d/", r.Page)
 	}
 	return u.String()
 }
