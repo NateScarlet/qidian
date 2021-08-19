@@ -1,7 +1,6 @@
 package book
 
 import (
-	"net/url"
 	"strings"
 	"testing"
 
@@ -11,50 +10,54 @@ import (
 	"golang.org/x/net/context"
 )
 
-func categorySearchID(t *testing.T, s *CategorySearch) string {
-	u, err := url.Parse(s.URL())
-	require.NoError(t, err)
+func categorySearchID(opts []CategorySearchOption) string {
+	u := CategorySearchURL(opts...)
 	u.Scheme = ""
 	u.Host = ""
 	return strings.Replace(u.String(), "/", "__", -1)
 }
 
 func TestCategorySearch_simple(t *testing.T) {
-	for _, c := range []*CategorySearch{
-		NewCategorySearch(),
-		NewCategorySearch().SetCategory(C科幻),
-		NewCategorySearch().SetSubCategory(SC未来世界),
-		NewCategorySearch().SetPage(2),
-		NewCategorySearch().SetPage(2).SetSort(SortMonthRecommend),
-		NewCategorySearch().SetSort(SortLastUpdated),
-		NewCategorySearch().SetSort(SortMonthRecommend),
-		NewCategorySearch().SetSort(SortRecentFinished),
-		NewCategorySearch().SetSort(SortTotalBookmark),
-		NewCategorySearch().SetSort(SortTotalRecommend),
-		NewCategorySearch().SetSort(SortWeekRecommend),
-		NewCategorySearch().SetSign(SignSigned),
-		NewCategorySearch().SetSign(SignChoicest),
-		NewCategorySearch().SetUpdate(UpdateIn3Day),
-		NewCategorySearch().SetUpdate(UpdateIn7Day),
-		NewCategorySearch().SetUpdate(UpdateInHalfMonth),
-		NewCategorySearch().SetUpdate(UpdateInMonth),
-		NewCategorySearch().SetState(StateOnGoing),
-		NewCategorySearch().SetState(StateFinished),
-		NewCategorySearch().SetSize(SizeLt300k),
-		NewCategorySearch().SetSize(SizeGt300kLt500k),
-		NewCategorySearch().SetSize(SizeGt500kLt1m),
-		NewCategorySearch().SetSize(SizeGt1mLt2m),
-		NewCategorySearch().SetSize(SizeGt2m),
-		NewCategorySearch().SetVIP(VIPFalse),
-		NewCategorySearch().SetVIP(VIPTrue),
-		NewCategorySearch().SetTag("变身"),
+	for _, c := range [][]CategorySearchOption{
+		{},
+		{CategorySearchOptionCategory(C科幻)},
+		{CategorySearchOptionSubCategory(SC未来世界)},
+		{CategorySearchOptionPage(2)},
+		{CategorySearchOptionPage(2), CategorySearchOptionSort(SortMonthRecommend)},
+		{CategorySearchOptionSort(SortLastUpdated)},
+		{CategorySearchOptionSort(SortMonthRecommend)},
+		{CategorySearchOptionSort(SortRecentFinished)},
+		{CategorySearchOptionSort(SortTotalBookmark)},
+		{CategorySearchOptionSort(SortTotalRecommend)},
+		{CategorySearchOptionSort(SortWeekRecommend)},
+		{CategorySearchOptionSign(SignSigned)},
+		{CategorySearchOptionSign(SignChoicest)},
+		{CategorySearchOptionUpdate(UpdateIn3Day)},
+		{CategorySearchOptionUpdate(UpdateIn7Day)},
+		{CategorySearchOptionUpdate(UpdateInHalfMonth)},
+		{CategorySearchOptionUpdate(UpdateInMonth)},
+		{CategorySearchOptionState(StateOnGoing)},
+		{CategorySearchOptionState(StateFinished)},
+		{CategorySearchOptionSize(SizeLt300k)},
+		{CategorySearchOptionSize(SizeGt300kLt500k)},
+		{CategorySearchOptionSize(SizeGt500kLt1m)},
+		{CategorySearchOptionSize(SizeGt1mLt2m)},
+		{CategorySearchOptionSize(SizeGt2m)},
+		{CategorySearchOptionVIP(VIPFalse)},
+		{CategorySearchOptionVIP(VIPTrue)},
+		{CategorySearchOptionTag("变身")},
 	} {
-		s := c
-		t.Run(categorySearchID(t, s), func(t *testing.T) {
-			res, err := s.Execute(context.Background())
+		t.Run(categorySearchID(c), func(t *testing.T) {
+			res, err := CategorySearch(context.Background(), c...)
 			require.NoError(t, err)
-			assert.Len(t, res, 20)
-			for _, i := range res {
+			books, err := res.Books()
+			require.NoError(t, err)
+			var opt = new(CategorySearchOptions)
+			for _, i := range c {
+				i(opt)
+			}
+			assert.Len(t, books, 20)
+			for _, i := range books {
 				assert.NotEmpty(t, i.ID)
 				assert.NotEmpty(t, i.Title)
 				assert.NotEmpty(t, i.Author.Name)
@@ -62,27 +65,27 @@ func TestCategorySearch_simple(t *testing.T) {
 				assert.NotEmpty(t, i.Category)
 				assert.NotEmpty(t, i.SubCategory)
 				assert.NotEmpty(t, i.WordCount)
-				if s.Sort == SortTotalBookmark {
+				if opt.sort == SortTotalBookmark {
 					assert.NotEmpty(t, i.BookmarkCount)
 				}
-				if s.Sort == "" {
+				if opt.sort == "" {
 					assert.NotEmpty(t, i.LastUpdated)
 				}
-				if s.Sort == SortWeekRecommend {
+				if opt.sort == SortWeekRecommend {
 					assert.NotEmpty(t, i.WeekRecommendCount)
 				}
-				if s.Sort == SortMonthRecommend {
+				if opt.sort == SortMonthRecommend {
 					assert.NotEmpty(t, i.MonthRecommendCount)
 				}
-				if s.Sort == SortTotalRecommend {
+				if opt.sort == SortTotalRecommend {
 					assert.NotEmpty(t, i.TotalRecommendCount)
 				}
-				if s.Sort == SortRecentFinished {
+				if opt.sort == SortRecentFinished {
 					assert.NotEmpty(t, i.Finished)
 				}
 			}
 			if snapshot.DefaultUpdate {
-				snapshot.MatchJSON(t, res)
+				snapshot.MatchJSON(t, books)
 			}
 		})
 

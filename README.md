@@ -36,14 +36,16 @@ client.For(ctx) // http.DefaultClient
 client.With(ctx, new(http.Client)) // context.Context
 
 // 分类搜索
-book.NewCategorySearch().
-    SetSubCategory(book.SC未来世界).
-    SetSize(book.SizeGt300kLt500k).
-    SetSort(book.SortWeekRecommend).
-    SetUpdate(book.UpdateIn3Day).
-    SetTag("变身").
-    SetPage(2).
-    Execute(ctx) // []book.Book
+res, err = book.CategorySearch(
+    ctx,
+    book.CategorySearchOptionSubCategory(book.SC未来世界)
+    book.CategorySearchOptionSize(book.SizeGt300kLt500k)
+    book.CategorySearchOptionSort(book.SortWeekRecommend)
+    book.CategorySearchOptionUpdate(book.UpdateIn3Day)
+    book.CategorySearchOptionTag("变身")
+    book.CategorySearchOptionPage(2)
+)
+res.Books() // []book.Book, error
 
 // 书籍详情
 b := &book.Book{ID: "1"}

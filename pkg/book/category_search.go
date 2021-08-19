@@ -83,142 +83,148 @@ const (
 	SizeGt2m         Size = "5"
 )
 
-// CategorySearch use https://www.qidian.com/all page
-type CategorySearch struct {
-	Site        string
-	Sort        Sort
-	Page        int
-	Category    Category
-	SubCategory SubCategory
-	State       State
-	Tag         string
-	Sign        Sign
-	Update      Update
-	VIP         VIP
-	Size        Size
+type CategorySearchOptions struct {
+	site        string
+	sort        Sort
+	page        int
+	category    Category
+	subCategory SubCategory
+	state       State
+	tag         string
+	sign        Sign
+	update      Update
+	vip         VIP
+	size        Size
 }
 
-// NewCategorySearch create a new search for function chaining.
-func NewCategorySearch() *CategorySearch {
-	return &CategorySearch{}
-}
+type CategorySearchOption = func(o *CategorySearchOptions)
 
-// SetPage then returns self.
-func (s *CategorySearch) SetPage(v int) *CategorySearch {
-	s.Page = v
-	return s
-}
-
-// SetSort then returns self.
-func (s *CategorySearch) SetSort(v Sort) *CategorySearch {
-	s.Sort = v
-	return s
-}
-
-// SetCategory then returns self.
-func (s *CategorySearch) SetCategory(v Category) *CategorySearch {
-	s.Category = v
-	s.Site = v.Site()
-	return s
-}
-
-// SetSubCategory and category then returns self.
-func (s *CategorySearch) SetSubCategory(v SubCategory) *CategorySearch {
-	s.SubCategory = v
-	s.SetCategory(v.Parent())
-	return s
-}
-
-// SetState then returns self.
-func (s *CategorySearch) SetState(v State) *CategorySearch {
-	s.State = v
-	return s
-}
-
-// SetSign then returns self.
-func (s *CategorySearch) SetSign(v Sign) *CategorySearch {
-	s.Sign = v
-	return s
-}
-
-// SetUpdate then returns self.
-func (s *CategorySearch) SetUpdate(v Update) *CategorySearch {
-	s.Update = v
-	return s
-}
-
-// SetVIP then returns self.
-func (s *CategorySearch) SetVIP(v VIP) *CategorySearch {
-	s.VIP = v
-	return s
-}
-
-// SetSize then returns self.
-func (s *CategorySearch) SetSize(v Size) *CategorySearch {
-	s.Size = v
-	return s
-}
-
-// SetTag then returns self.
-func (s *CategorySearch) SetTag(v string) *CategorySearch {
-	s.Tag = v
-	return s
-}
-
-// URL of search result page.
-func (s CategorySearch) URL() string {
-	u := url.URL{
-		Scheme: "https",
-		Host:   "www.qidian.com",
-		Path:   "all",
+func CategorySearchURL(opts ...CategorySearchOption) (ret url.URL) {
+	var opt = new(CategorySearchOptions)
+	for _, i := range opts {
+		i(opt)
 	}
-	if s.Site != "" {
-		u.Path = s.Site + "/" + u.Path
+
+	ret = httpsURL("/all")
+
+	if opt.site != "" {
+		ret.Path = opt.site + "/" + ret.Path
 	}
-	if !strings.HasSuffix(u.Path, "/") {
-		u.Path += "/"
+	if !strings.HasSuffix(ret.Path, "/") {
+		ret.Path += "/"
 	}
 	var filters = []string{}
-	if s.Category != "" {
-		filters = append(filters, fmt.Sprintf("chanId%s", string(s.Category)))
+	if opt.category != "" {
+		filters = append(filters, fmt.Sprintf("chanId%s", string(opt.category)))
 	}
-	if s.SubCategory != "" {
-		filters = append(filters, fmt.Sprintf("subCateId%s", string(s.SubCategory)))
+	if opt.subCategory != "" {
+		filters = append(filters, fmt.Sprintf("subCateId%s", string(opt.subCategory)))
 	}
-	if s.State != "" {
-		filters = append(filters, fmt.Sprintf("action%s", string(s.State)))
+	if opt.state != "" {
+		filters = append(filters, fmt.Sprintf("action%s", string(opt.state)))
 	}
-	if s.VIP != "" {
-		filters = append(filters, fmt.Sprintf("vip%s", string(s.VIP)))
+	if opt.vip != "" {
+		filters = append(filters, fmt.Sprintf("vip%s", string(opt.vip)))
 	}
-	if s.Size != "" {
-		filters = append(filters, fmt.Sprintf("size%s", string(s.Size)))
+	if opt.size != "" {
+		filters = append(filters, fmt.Sprintf("size%s", string(opt.size)))
 	}
-	if s.Sign != "" {
-		filters = append(filters, fmt.Sprintf("sign%s", string(s.Sign)))
+	if opt.sign != "" {
+		filters = append(filters, fmt.Sprintf("sign%s", string(opt.sign)))
 	}
-	if s.Update != "" {
-		filters = append(filters, fmt.Sprintf("update%s", string(s.Update)))
+	if opt.update != "" {
+		filters = append(filters, fmt.Sprintf("update%s", string(opt.update)))
 	}
-	if s.Sort != "" {
-		filters = append(filters, fmt.Sprintf("orderId%s", string(s.Sort)))
+	if opt.sort != "" {
+		filters = append(filters, fmt.Sprintf("orderId%s", string(opt.sort)))
 	}
-	if s.Tag != "" {
-		filters = append(filters, fmt.Sprintf("tag%s", string(s.Tag)))
+	if opt.tag != "" {
+		filters = append(filters, fmt.Sprintf("tag%s", string(opt.tag)))
 	}
-	if s.Page > 1 {
-		filters = append(filters, fmt.Sprintf("page%d", s.Page))
+	if opt.page > 1 {
+		filters = append(filters, fmt.Sprintf("page%d", opt.page))
 	}
 	if len(filters) > 0 {
-		u.Path += strings.Join(filters, "-") + "/"
+		ret.Path += strings.Join(filters, "-") + "/"
 	}
-	return u.String()
+	return
 }
 
-// Execute search
-func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
-	u := s.URL()
-	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
+func CategorySearchOptionPage(v int) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.page = v
+	}
+}
+
+func CategorySearchOptionSort(v Sort) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.sort = v
+	}
+}
+
+func CategorySearchOptionCategory(v Category) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.category = v
+		o.site = v.Site()
+	}
+}
+
+func CategorySearchOptionSubCategory(v SubCategory) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.subCategory = v
+		CategorySearchOptionCategory(v.Parent())(o)
+	}
+}
+
+func CategorySearchOptionState(v State) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.state = v
+	}
+}
+
+func CategorySearchOptionSign(v Sign) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.sign = v
+	}
+}
+
+func CategorySearchOptionUpdate(v Update) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.update = v
+	}
+}
+
+func CategorySearchOptionVIP(v VIP) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.vip = v
+	}
+}
+
+func CategorySearchOptionSize(v Size) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.size = v
+	}
+}
+
+func CategorySearchOptionTag(v string) CategorySearchOption {
+	return func(o *CategorySearchOptions) {
+		o.tag = v
+	}
+}
+
+type CategorySearchResult struct {
+	Response *http.Response
+	Site     string
+}
+
+// CategorySearch use https://www.qidian.com/all page
+func CategorySearch(ctx context.Context, opts ...CategorySearchOption) (ret CategorySearchResult, err error) {
+	u := CategorySearchURL(opts...)
+	var opt = new(CategorySearchOptions)
+	for _, i := range opts {
+		i(opt)
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
 	if err != nil {
 		return
 	}
@@ -226,19 +232,21 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 		Name:  "listStyle",
 		Value: "2",
 	})
-	res, err := client.For(ctx).Do(req)
-	if err != nil {
-		return
-	}
+	ret.Site = opt.site
+	ret.Response, err = client.For(ctx).Do(req)
+	return
+}
+
+func (r CategorySearchResult) Books() (ret []Book, err error) {
+	var res = r.Response
 	defer res.Body.Close()
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		return
 	}
-	table := doc.
-		Find("table.rank-table-list")
+	table := doc.Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: can not found result table: %s", u)
+		return nil, fmt.Errorf("qidian: can not found result table: %s", r.Response.Request.URL)
 	}
-	return parseTable(table, nil, s.Site)
+	return parseTable(table, nil, r.Site)
 }
