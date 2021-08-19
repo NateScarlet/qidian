@@ -15,17 +15,24 @@ import (
 // RankType that corresponding a rank page.
 type RankType struct {
 	// URL for rank page.
-	URL string
+	URL url.URL
 	// ColumnParser for result table. Defaults to DefaultColumnParser.
 	ColumnParser ColumnParser
 	Site         string
+}
+
+func httpsURL(path string) (ret url.URL) {
+	ret.Scheme = "https"
+	ret.Host = "www.qidian.com"
+	ret.Path = path
+	return
 }
 
 // Rank types
 var (
 	// support query by year and month after 2020-01.
 	RTMonthlyTicket = RankType{
-		URL: "https://www.qidian.com/rank/yuepiao/",
+		URL: httpsURL("/rank/yuepiao/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "":
@@ -38,7 +45,7 @@ var (
 	}
 	// support query by year and month after 2020-01.
 	RTMonthlyTicketVIP = RankType{
-		URL: "https://www.qidian.com/rank/fengyun/",
+		URL: httpsURL("/rank/fengyun/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "月票榜", "起点月票榜":
@@ -51,30 +58,30 @@ var (
 	}
 	// support query by year and month after 2020-01.
 	RTMonthlyTicketMM = RankType{
-		URL:          "https://www.qidian.com/rank/mm/yuepiao/",
+		URL:          httpsURL("/rank/mm/yuepiao/"),
 		ColumnParser: RTMonthlyTicketVIP.ColumnParser,
 		Site:         "mm",
 	}
 	RTNewBookSalesMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/newsales/",
+		URL:  httpsURL("/rank/mm/newsales/"),
 		Site: "mm",
 	}
 	RTDailySales = RankType{
-		URL: "https://www.qidian.com/rank/hotsales/",
+		URL: httpsURL("/rank/hotsales/"),
 	}
 	RTDailySalesMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/hotsales/",
+		URL:  httpsURL("/rank/mm/hotsales/"),
 		Site: "mm",
 	}
 	RTWeeklyRead = RankType{
-		URL: "https://www.qidian.com/rank/readindex/",
+		URL: httpsURL("/rank/readindex/"),
 	}
 	RTWeeklyReadMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/readindex/",
+		URL:  httpsURL("/rank/mm/readindex/"),
 		Site: "mm",
 	}
 	RTWeeklyRecommendation = RankType{
-		URL: "https://www.qidian.com/rank/recom/",
+		URL: httpsURL("/rank/recom/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch column := strings.TrimSpace(th.Text()); column {
 			case "推荐":
@@ -86,12 +93,12 @@ var (
 		}),
 	}
 	RTWeeklyRecommendationMM = RankType{
-		URL:          "https://www.qidian.com/rank/mm/recom/",
+		URL:          httpsURL("/rank/mm/recom/"),
 		ColumnParser: RTWeeklyRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTMonthlyRecommendation = RankType{
-		URL: "https://www.qidian.com/rank/recom/datatype2/",
+		URL: httpsURL("/rank/recom/datatype2/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
@@ -103,12 +110,12 @@ var (
 		}),
 	}
 	RTMonthlyRecommendationMM = RankType{
-		URL:          "https://www.qidian.com/rank/mm/recom/datatype2/",
+		URL:          httpsURL("/rank/mm/recom/datatype2/"),
 		ColumnParser: RTMonthlyRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTTotalRecommendation = RankType{
-		URL: "https://www.qidian.com/rank/recom/datatype3/",
+		URL: httpsURL("/rank/recom/datatype3/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
@@ -120,83 +127,83 @@ var (
 		}),
 	}
 	RTTotalRecommendationMM = RankType{
-		URL:          "https://www.qidian.com/rank/mm/recom/datatype3/",
+		URL:          httpsURL("/rank/mm/recom/datatype3/"),
 		ColumnParser: RTTotalRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTTotalBookmark = RankType{
-		URL: "https://www.qidian.com/rank/collect/",
+		URL: httpsURL("/rank/collect/"),
 	}
 	RTTotalBookmarkMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/collect/",
+		URL:  httpsURL("/rank/mm/collect/"),
 		Site: "mm",
 	}
 	RTSignedAuthorNewBook = RankType{
-		URL: "https://www.qidian.com/rank/signnewbook/",
+		URL: httpsURL("/rank/signnewbook/"),
 	}
 	RTSignedAuthorNewBookMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/signnewbook/",
+		URL:  httpsURL("/rank/mm/signnewbook/"),
 		Site: "mm",
 	}
 	RTPublicAuthorNewBook = RankType{
-		URL: "https://www.qidian.com/rank/pubnewbook/",
+		URL: httpsURL("/rank/pubnewbook/"),
 	}
 	RTPublicAuthorNewBookMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/pubnewbook/",
+		URL:  httpsURL("/rank/mm/pubnewbook/"),
 		Site: "mm",
 	}
 	RTNewSignedAuthorNewBook = RankType{
-		URL: "https://www.qidian.com/rank/newsign/",
+		URL: httpsURL("/rank/newsign/"),
 	}
 	RTNewSignedAuthorNewBookMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/newsign/",
+		URL:  httpsURL("/rank/mm/newsign/"),
 		Site: "mm",
 	}
 	RTNewAuthorNewBook = RankType{
-		URL: "https://www.qidian.com/rank/newauthor/",
+		URL: httpsURL("/rank/newauthor/"),
 	}
 	RTNewAuthorNewBookMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/newauthor/",
+		URL:  httpsURL("/rank/mm/newauthor/"),
 		Site: "mm",
 	}
 	RTWeeklyFans = RankType{
-		URL: "https://www.qidian.com/rank/newfans/",
+		URL: httpsURL("/rank/newfans/"),
 	}
 	RTWeeklyFansMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/newfans/",
+		URL:  httpsURL("/rank/mm/newfans/"),
 		Site: "mm",
 	}
 	RTLastUpdatedVIP = RankType{
-		URL: "https://www.qidian.com/rank/vipup/",
+		URL: httpsURL("/rank/vipup/"),
 	}
 	RTDailyMostUpdateVIPMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/vipup/",
+		URL:  httpsURL("/rank/mm/vipup/"),
 		Site: "mm",
 	}
 	RTWeeklyMostUpdateVIPMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/vipup/datatype2/",
+		URL:  httpsURL("/rank/mm/vipup/datatype2/"),
 		Site: "mm",
 	}
 	RTMonthlyMostUpdateVIPMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/vipup/datatype3/",
+		URL:  httpsURL("/rank/mm/vipup/datatype3/"),
 		Site: "mm",
 	}
 	RTTotalWordCountMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/wordcount/",
+		URL:  httpsURL("/rank/mm/wordcount/"),
 		Site: "mm",
 	}
 	RTTotalBookmarkVIP = RankType{
-		URL: "https://www.qidian.com/rank/vipcollect/",
+		URL: httpsURL("/rank/vipcollect/"),
 	}
 	RTWeeklyRewardVIP = RankType{
-		URL: "https://www.qidian.com/rank/vipreward/",
+		URL: httpsURL("/rank/vipreward/"),
 	}
 	RTWeeklySingleChapterSalesMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/subscr/",
+		URL:  httpsURL("/rank/mm/subscr/"),
 		Site: "mm",
 	}
 	RTTotalSingleChapterSalesVIPMM = RankType{
-		URL:  "https://www.qidian.com/rank/mm/vipsub/",
+		URL:  httpsURL("/rank/mm/vipsub/"),
 		Site: "mm",
 	}
 )
@@ -238,15 +245,12 @@ func RankOptionPage(page int) RankOption {
 	}
 }
 
-func RankURL(rt RankType, opts ...RankOption) (ret *url.URL) {
+func RankURL(rt RankType, opts ...RankOption) (ret url.URL) {
 	var args = new(RankOptions)
 	for _, i := range opts {
 		i(args)
 	}
-	ret, err := url.Parse(rt.URL)
-	if err != nil {
-		return
-	}
+	ret = rt.URL
 	if !strings.HasSuffix(ret.Path, "/") {
 		ret.Path += "/"
 	}
