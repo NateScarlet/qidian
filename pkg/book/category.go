@@ -99,7 +99,7 @@ const (
     SC同人衍生mm SubCategory = "30100"
     SC唯美幻想mm SubCategory = "30101"
     SC萌系变身mm SubCategory = "30102"
-    SC青春日常mm SubCategory = "30103"
+    SC恋爱日常mm SubCategory = "30103"
     SC搞笑吐槽mm SubCategory = "30104"
     SC古典衍生mm SubCategory = "30105"
     SC影视衍生mm SubCategory = "30106"
@@ -124,7 +124,7 @@ const (
     SC剑与魔法 SubCategory = "62"
     SC现代修真 SubCategory = "64"
     SC军事战争 SubCategory = "65"
-    SC青春日常 SubCategory = "66"
+    SC恋爱日常 SubCategory = "66"
     SC星际文明 SubCategory = "68"
     SC电子竞技 SubCategory = "7"
     SC虚拟网游 SubCategory = "70"
@@ -489,7 +489,7 @@ func (sc SubCategory) Parent() Category {
         return C轻小说mm
     case SC萌系变身mm:
         return C轻小说mm
-    case SC青春日常mm:
+    case SC恋爱日常mm:
         return C轻小说mm
     case SC搞笑吐槽mm:
         return C轻小说mm
@@ -539,7 +539,7 @@ func (sc SubCategory) Parent() Category {
         return C仙侠
     case SC军事战争:
         return C军事
-    case SC青春日常:
+    case SC恋爱日常:
         return C轻小说
     case SC星际文明:
         return C科幻
@@ -785,8 +785,8 @@ func (sc SubCategory) String() string {
         return "唯美幻想"
     case SC萌系变身mm:
         return "萌系变身"
-    case SC青春日常mm:
-        return "青春日常"
+    case SC恋爱日常mm:
+        return "恋爱日常"
     case SC搞笑吐槽mm:
         return "搞笑吐槽"
     case SC古典衍生mm:
@@ -835,8 +835,8 @@ func (sc SubCategory) String() string {
         return "现代修真"
     case SC军事战争:
         return "军事战争"
-    case SC青春日常:
-        return "青春日常"
+    case SC恋爱日常:
+        return "恋爱日常"
     case SC星际文明:
         return "星际文明"
     case SC电子竞技:
@@ -1083,7 +1083,7 @@ func (c SubCategory) Site() string {
         return "mm"
     case SC萌系变身mm:
         return "mm"
-    case SC青春日常mm:
+    case SC恋爱日常mm:
         return "mm"
     case SC搞笑吐槽mm:
         return "mm"
@@ -1133,7 +1133,7 @@ func (c SubCategory) Site() string {
         return ""
     case SC军事战争:
         return ""
-    case SC青春日常:
+    case SC恋爱日常:
         return ""
     case SC星际文明:
         return ""
@@ -1379,8 +1379,8 @@ func SubCategoryByName(name, site string) SubCategory {
         return SC唯美幻想mm
     case name == "萌系变身" && site == "mm":
         return SC萌系变身mm
-    case name == "青春日常" && site == "mm":
-        return SC青春日常mm
+    case name == "恋爱日常" && site == "mm":
+        return SC恋爱日常mm
     case name == "搞笑吐槽" && site == "mm":
         return SC搞笑吐槽mm
     case name == "古典衍生" && site == "mm":
@@ -1429,8 +1429,8 @@ func SubCategoryByName(name, site string) SubCategory {
         return SC现代修真
     case name == "军事战争" && site == "":
         return SC军事战争
-    case name == "青春日常" && site == "":
-        return SC青春日常
+    case name == "恋爱日常" && site == "":
+        return SC恋爱日常
     case name == "星际文明" && site == "":
         return SC星际文明
     case name == "电子竞技" && site == "":

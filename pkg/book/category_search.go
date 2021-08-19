@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
+	"strings"
 
 	"github.com/NateScarlet/qidian/pkg/client"
 	"github.com/PuerkitoBio/goquery"
@@ -175,39 +175,43 @@ func (s CategorySearch) URL() string {
 	if s.Site != "" {
 		u.Path = s.Site + "/" + u.Path
 	}
-	q := u.Query()
-	q.Set("style", "2")
-	if s.Page > 1 {
-		q.Set("page", strconv.Itoa(s.Page))
+	if !strings.HasSuffix(u.Path, "/") {
+		u.Path += "/"
 	}
-	if s.Sort != "" {
-		q.Set("orderId", string(s.Sort))
-	}
+	var filters = []string{}
 	if s.Category != "" {
-		q.Set("chanId", string(s.Category))
+		filters = append(filters, fmt.Sprintf("chanId%s", string(s.Category)))
 	}
 	if s.SubCategory != "" {
-		q.Set("subCateId", string(s.SubCategory))
+		filters = append(filters, fmt.Sprintf("subCateId%s", string(s.SubCategory)))
 	}
 	if s.State != "" {
-		q.Set("action", string(s.State))
-	}
-	if s.Sign != "" {
-		q.Set("sign", string(s.Sign))
-	}
-	if s.Update != "" {
-		q.Set("update", string(s.Update))
+		filters = append(filters, fmt.Sprintf("action%s", string(s.State)))
 	}
 	if s.VIP != "" {
-		q.Set("vip", string(s.VIP))
+		filters = append(filters, fmt.Sprintf("vip%s", string(s.VIP)))
 	}
 	if s.Size != "" {
-		q.Set("size", string(s.Size))
+		filters = append(filters, fmt.Sprintf("size%s", string(s.Size)))
+	}
+	if s.Sign != "" {
+		filters = append(filters, fmt.Sprintf("sign%s", string(s.Sign)))
+	}
+	if s.Update != "" {
+		filters = append(filters, fmt.Sprintf("update%s", string(s.Update)))
+	}
+	if s.Sort != "" {
+		filters = append(filters, fmt.Sprintf("orderId%s", string(s.Sort)))
 	}
 	if s.Tag != "" {
-		q.Set("tag", s.Tag)
+		filters = append(filters, fmt.Sprintf("tag%s", string(s.Tag)))
 	}
-	u.RawQuery = q.Encode()
+	if s.Page > 1 {
+		filters = append(filters, fmt.Sprintf("page%d", s.Page))
+	}
+	if len(filters) > 0 {
+		u.Path += strings.Join(filters, "-") + "/"
+	}
 	return u.String()
 }
 
@@ -218,6 +222,10 @@ func (s CategorySearch) Execute(ctx context.Context) (ret []Book, err error) {
 	if err != nil {
 		return
 	}
+	req.AddCookie(&http.Cookie{
+		Name:  "listStyle",
+		Value: "2",
+	})
 	res, err := client.For(ctx).Do(req)
 	if err != nil {
 		return

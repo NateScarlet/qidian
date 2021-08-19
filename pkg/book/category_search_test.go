@@ -1,7 +1,6 @@
 package book
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,10 +39,10 @@ func TestCategorySearch_simple(t *testing.T) {
 		NewCategorySearch().SetTag("变身"),
 	} {
 		s := c
-		t.Run(fmt.Sprintf("%+v", c), func(t *testing.T) {
+		t.Run(s.URL(), func(t *testing.T) {
 			res, err := s.Execute(context.Background())
 			require.NoError(t, err)
-			assert.Len(t, res, 50)
+			assert.Len(t, res, 20)
 			for _, i := range res {
 				assert.NotEmpty(t, i.ID)
 				assert.NotEmpty(t, i.Title)

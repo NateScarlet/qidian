@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -56,7 +57,12 @@ type subCategory struct {
 
 func findSubCategories(id string) (subCategories []subCategory, err error) {
 	var fetch = func(template, site string) (err error) {
-		resp, err := http.Get(template + id)
+		req, err := http.NewRequest("GET", template+id, nil)
+		if err != nil {
+			return
+		}
+		req.AddCookie(&http.Cookie{Name: "listStyle", Value: "2"})
+		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
 			return
 		}
@@ -68,21 +74,26 @@ func findSubCategories(id string) (subCategories []subCategory, err error) {
 		doc.Find(`.sub-type > dl:not(.hidden) > dd[data-subtype] > a`).Each(func(_ int, s *goquery.Selection) {
 			href, _ := s.Attr("href")
 			u, _ := url.Parse(href)
-			q := u.Query()
-			subCategories = append(subCategories, subCategory{
-				parentID: q.Get("chanId"),
-				id:       q.Get("subCateId"),
-				name:     s.Text(),
-				site:     site,
-			})
+			var sc = subCategory{name: s.Text(), site: site}
+			var pathParts = strings.Split(strings.TrimSuffix(u.Path, "/"), "/")
+			var filters = strings.Split(pathParts[len(pathParts)-1], "-")
+			for _, filter := range filters {
+				if strings.HasPrefix(filter, "chanId") {
+					sc.parentID = filter[6:]
+				}
+				if strings.HasPrefix(filter, "subCateId") {
+					sc.id = filter[9:]
+				}
+			}
+			subCategories = append(subCategories, sc)
 		})
 		return
 	}
-	err = fetch("https://www.qidian.com/mm/all?chanId=", "mm")
+	err = fetch("https://www.qidian.com/mm/all/chanId", "mm")
 	if err != nil {
 		return
 	}
-	err = fetch("https://www.qidian.com/all?chanId=", "")
+	err = fetch("https://www.qidian.com/all/chanId", "")
 	if err != nil {
 		return
 	}
