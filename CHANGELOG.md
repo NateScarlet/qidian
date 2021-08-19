@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/NateScarlet/qidian/compare/v0.1.9...v0.2.0) (2021-08-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* change type of (book.RankType).URL from string to url.URL
+* use options API for book.CategorySearch
+* use options API for book.Rank
+
+### Features
+
+* change type of (book.RankType).URL from string to url.URL ([52f370c](https://github.com/NateScarlet/qidian/commit/52f370c7ae356b5f92e74d624eb80f4703068437))
+* use options API for book.CategorySearch ([c4ac056](https://github.com/NateScarlet/qidian/commit/c4ac056b1f646bac62be3171fb6c1cd0e8a9caf0))
+* use options API for book.Rank ([f5c7acf](https://github.com/NateScarlet/qidian/commit/f5c7acff850a8907547c862cde0b6c589d946fa3))
+
 ### [0.1.9](https://github.com/NateScarlet/qidian/compare/v0.1.8...v0.1.9) (2021-08-19)
 
 
