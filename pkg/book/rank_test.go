@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/NateScarlet/snapshot/pkg/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -248,7 +249,9 @@ func TestRank_Fetch(t *testing.T) {
 			books, err := c.rank.Fetch(context.Background())
 			require.NoError(t, err)
 			assert.NotEmpty(t, books)
-
+			if snapshot.DefaultUpdate {
+				snapshot.MatchJSON(t, books)
+			}
 			for _, book := range books {
 				assert.NotEmpty(t, book.ID)
 				assert.NotEmpty(t, book.Title)

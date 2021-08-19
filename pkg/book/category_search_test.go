@@ -1,12 +1,23 @@
 package book
 
 import (
+	"net/url"
+	"strings"
 	"testing"
 
+	"github.com/NateScarlet/snapshot/pkg/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/context"
 )
+
+func categorySearchID(t *testing.T, s *CategorySearch) string {
+	u, err := url.Parse(s.URL())
+	require.NoError(t, err)
+	u.Scheme = ""
+	u.Host = ""
+	return strings.Replace(u.String(), "/", "__", -1)
+}
 
 func TestCategorySearch_simple(t *testing.T) {
 	for _, c := range []*CategorySearch{
@@ -39,7 +50,7 @@ func TestCategorySearch_simple(t *testing.T) {
 		NewCategorySearch().SetTag("变身"),
 	} {
 		s := c
-		t.Run(s.URL(), func(t *testing.T) {
+		t.Run(categorySearchID(t, s), func(t *testing.T) {
 			res, err := s.Execute(context.Background())
 			require.NoError(t, err)
 			assert.Len(t, res, 20)
@@ -69,6 +80,9 @@ func TestCategorySearch_simple(t *testing.T) {
 				if s.Sort == SortRecentFinished {
 					assert.NotEmpty(t, i.Finished)
 				}
+			}
+			if snapshot.DefaultUpdate {
+				snapshot.MatchJSON(t, res)
 			}
 		})
 
