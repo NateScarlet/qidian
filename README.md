@@ -53,11 +53,8 @@ b.Author.ID // "1"
 b.Author.Name // "宝剑锋"
 
 // 书籍排行榜
-book.Rank{
-    Type:  book.RTMonthlyTicket,
-    Year:  2020,
-    Month: time.January,
-}.Fetch(ctx) // []book.Book, error
+res, err := book.Rank(ctx, book.RTMonthlyTicket, book.RankOptionYearMonth(2020, time.January))
+books, err := res.Books() // []book.Book, error
 
 // 作者详情
 a := &author.Author{ID: "1"}

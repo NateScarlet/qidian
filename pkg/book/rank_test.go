@@ -13,7 +13,8 @@ import (
 func TestRank_Fetch(t *testing.T) {
 	for _, c := range []struct {
 		name                           string
-		rank                           Rank
+		rankType                       RankType
+		options                        []RankOption
 		shouldHasMonthlyTicket         bool
 		shouldHasWeeklyRecommendation  bool
 		shouldHasMonthlyRecommendation bool
@@ -21,241 +22,169 @@ func TestRank_Fetch(t *testing.T) {
 		shouldHasBookmark              bool
 	}{
 		{
-			name: "monthly-ticket",
-			rank: Rank{
-				Type: RTMonthlyTicket,
-			},
+			name:                   "monthly-ticket",
+			rankType:               RTMonthlyTicket,
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "monthly-ticket-page2",
-			rank: Rank{
-				Type: RTMonthlyTicket,
-				Page: 2,
-			},
+			name:                   "monthly-ticket-page2",
+			rankType:               RTMonthlyTicket,
+			options:                []RankOption{RankOptionPage(2)},
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "monthly-ticket-mm",
-			rank: Rank{
-				Type: RTMonthlyTicketMM,
-			},
+			name:                   "monthly-ticket-mm",
+			rankType:               RTMonthlyTicketMM,
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "monthly-ticket-vip",
-			rank: Rank{
-				Type: RTMonthlyTicketVIP,
-			},
+			name:                   "monthly-ticket-vip",
+			rankType:               RTMonthlyTicketVIP,
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "monthly-ticket category",
-			rank: Rank{
-				Type:     RTMonthlyTicket,
-				Category: C科幻,
-			},
+			name:                   "monthly-ticket category",
+			rankType:               RTMonthlyTicket,
+			options:                []RankOption{RankOptionCategory(C科幻)},
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "monthly-ticket history",
-			rank: Rank{
-				Type:  RTMonthlyTicket,
-				Year:  2020,
-				Month: time.January,
-			},
+			name:                   "monthly-ticket history",
+			rankType:               RTMonthlyTicket,
+			options:                []RankOption{RankOptionYearMonth(2020, time.January)},
 			shouldHasMonthlyTicket: true,
 		},
 		{
-			name: "new-book-sales-mm",
-			rank: Rank{
-				Type: RTDailySales,
-			},
+			name:     "new-book-sales-mm",
+			rankType: RTDailySales,
 		},
 		{
-			name: "daily-sales",
-			rank: Rank{
-				Type: RTDailySales,
-			},
+			name:     "daily-sales",
+			rankType: RTDailySales,
 		},
 		{
-			name: "daily-sales-mm",
-			rank: Rank{
-				Type: RTDailySales,
-			},
+			name:     "daily-sales-mm",
+			rankType: RTDailySales,
 		},
 		{
-			name: "weekly-read",
-			rank: Rank{
-				Type: RTWeeklyRead,
-			},
+			name:     "weekly-read",
+			rankType: RTWeeklyRead,
 		},
 		{
-			name: "weekly-read-mm",
-			rank: Rank{
-				Type: RTWeeklyReadMM,
-			},
+			name:     "weekly-read-mm",
+			rankType: RTWeeklyReadMM,
 		},
 		{
-			name: "weekly-recommendation",
-			rank: Rank{
-				Type: RTWeeklyRecommendation,
-			},
+			name:                          "weekly-recommendation",
+			rankType:                      RTWeeklyRecommendation,
 			shouldHasWeeklyRecommendation: true,
 		},
 		{
-			name: "weekly-recommendation-mm",
-			rank: Rank{
-				Type: RTWeeklyRecommendationMM,
-			},
+			name:                          "weekly-recommendation-mm",
+			rankType:                      RTWeeklyRecommendationMM,
 			shouldHasWeeklyRecommendation: true,
 		},
 		{
-			name: "monthly-recommendation",
-			rank: Rank{
-				Type: RTMonthlyRecommendation,
-			},
+			name:                           "monthly-recommendation",
+			rankType:                       RTMonthlyRecommendation,
 			shouldHasMonthlyRecommendation: true,
 		},
 		{
-			name: "monthly-recommendation-mm",
-			rank: Rank{
-				Type: RTMonthlyRecommendationMM,
-			},
+			name:                           "monthly-recommendation-mm",
+			rankType:                       RTMonthlyRecommendationMM,
 			shouldHasMonthlyRecommendation: true,
 		},
 		{
-			name: "total-recommendation",
-			rank: Rank{
-				Type: RTTotalRecommendation,
-			},
+			name:                         "total-recommendation",
+			rankType:                     RTTotalRecommendation,
 			shouldHasTotalRecommendation: true,
 		},
 		{
-			name: "total-recommendation-mm",
-			rank: Rank{
-				Type: RTTotalRecommendationMM,
-			},
+			name:                         "total-recommendation-mm",
+			rankType:                     RTTotalRecommendationMM,
 			shouldHasTotalRecommendation: true,
 		},
 		{
-			name: "signed-author-new-book",
-			rank: Rank{
-				Type: RTSignedAuthorNewBook,
-			},
+			name:     "signed-author-new-book",
+			rankType: RTSignedAuthorNewBook,
 		},
 		{
-			name: "signed-author-new-book-mm",
-			rank: Rank{
-				Type: RTSignedAuthorNewBookMM,
-			},
+			name:     "signed-author-new-book-mm",
+			rankType: RTSignedAuthorNewBookMM,
 		},
 		{
-			name: "public-author-new-book",
-			rank: Rank{
-				Type: RTPublicAuthorNewBook,
-			},
+			name:     "public-author-new-book",
+			rankType: RTPublicAuthorNewBook,
 		},
 		{
-			name: "public-author-new-book-mm",
-			rank: Rank{
-				Type: RTPublicAuthorNewBookMM,
-			},
+			name:     "public-author-new-book-mm",
+			rankType: RTPublicAuthorNewBookMM,
 		},
 		{
-			name: "new-author-new-book",
-			rank: Rank{
-				Type: RTNewAuthorNewBook,
-			},
+			name:     "new-author-new-book",
+			rankType: RTNewAuthorNewBook,
 		},
 		{
-			name: "new-author-new-book-mm",
-			rank: Rank{
-				Type: RTNewAuthorNewBookMM,
-			},
+			name:     "new-author-new-book-mm",
+			rankType: RTNewAuthorNewBookMM,
 		},
 		{
-			name: "new-signed-author-new-book",
-			rank: Rank{
-				Type: RTNewSignedAuthorNewBook,
-			},
+			name:     "new-signed-author-new-book",
+			rankType: RTNewSignedAuthorNewBook,
 		},
 		{
-			name: "new-signed-author-new-book-mm",
-			rank: Rank{
-				Type: RTNewSignedAuthorNewBookMM,
-			},
+			name:     "new-signed-author-new-book-mm",
+			rankType: RTNewSignedAuthorNewBookMM,
 		},
 		{
-			name: "weekly-fans",
-			rank: Rank{
-				Type: RTWeeklyFans,
-			},
+			name:     "weekly-fans",
+			rankType: RTWeeklyFans,
 		},
 		{
-			name: "weekly-fans-mm",
-			rank: Rank{
-				Type: RTWeeklyFansMM,
-			},
+			name:     "weekly-fans-mm",
+			rankType: RTWeeklyFansMM,
 		},
 		{
-			name: "last-updated",
-			rank: Rank{
-				Type: RTLastUpdatedVIP,
-			},
+			name:     "last-updated",
+			rankType: RTLastUpdatedVIP,
 		},
 		{
-			name: "total-bookmark-vip",
-			rank: Rank{
-				Type: RTTotalBookmarkVIP,
-			},
+			name:     "total-bookmark-vip",
+			rankType: RTTotalBookmarkVIP,
 		},
 		{
-			name: "weekly-reward-vip",
-			rank: Rank{
-				Type: RTWeeklyRewardVIP,
-			},
+			name:     "weekly-reward-vip",
+			rankType: RTWeeklyRewardVIP,
 		},
 		{
-			name: "weekly-single-chapter-sales-mm",
-			rank: Rank{
-				Type: RTWeeklySingleChapterSalesMM,
-			},
+			name:     "weekly-single-chapter-sales-mm",
+			rankType: RTWeeklySingleChapterSalesMM,
 		},
 		{
-			name: "total-single-chapter-sales-vip-mm",
-			rank: Rank{
-				Type: RTTotalSingleChapterSalesVIPMM,
-			},
+			name:     "total-single-chapter-sales-vip-mm",
+			rankType: RTTotalSingleChapterSalesVIPMM,
 		},
 		{
-			name: "daily-most-update-vip-mm",
-			rank: Rank{
-				Type: RTDailyMostUpdateVIPMM,
-			},
+			name:     "daily-most-update-vip-mm",
+			rankType: RTDailyMostUpdateVIPMM,
 		},
 		{
-			name: "weekly-most-update-vip-mm",
-			rank: Rank{
-				Type: RTWeeklyMostUpdateVIPMM,
-			},
+			name:     "weekly-most-update-vip-mm",
+			rankType: RTWeeklyMostUpdateVIPMM,
 		},
 		{
-			name: "monthly-most-update-vip-mm",
-			rank: Rank{
-				Type: RTMonthlyMostUpdateVIPMM,
-			},
+			name:     "monthly-most-update-vip-mm",
+			rankType: RTMonthlyMostUpdateVIPMM,
 		},
 		{
-			name: "total-word-count-mm",
-			rank: Rank{
-				Type: RTTotalWordCountMM,
-			},
+			name:     "total-word-count-mm",
+			rankType: RTTotalWordCountMM,
 		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			books, err := c.rank.Fetch(context.Background())
+			res, err := Rank(context.Background(), c.rankType, c.options...)
 			require.NoError(t, err)
+			books, err := res.Books()
 			assert.NotEmpty(t, books)
 			if snapshot.DefaultUpdate {
 				snapshot.MatchJSON(t, books)
@@ -264,7 +193,7 @@ func TestRank_Fetch(t *testing.T) {
 				assert.NotEmpty(t, book.ID)
 				assert.NotEmpty(t, book.Title)
 				assert.NotEmpty(t, book.Category)
-				assert.Equal(t, c.rank.Type.Site, book.Site)
+				assert.Equal(t, c.rankType.Site, book.Site)
 				assert.NotEmpty(t, book.LastUpdated)
 				if c.shouldHasMonthlyTicket {
 					assert.NotEmpty(t, book.MonthTicketCount)

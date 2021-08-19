@@ -2,7 +2,6 @@ package book
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -202,57 +201,76 @@ var (
 	}
 )
 
-// Rank for books.
-// not all rank type support query by year and month.
-type Rank struct {
-	Type     RankType
-	Category Category
-	Year     int
-	Page     int
-	Month    time.Month
+type RankOptions struct {
+	category Category
+	year     int
+	month    time.Month
+	page     int
 }
 
-// URL of rank page.
-func (r Rank) URL() string {
-	var u, err = url.Parse(r.Type.URL)
-	if err != nil {
-		return ""
+type RankOption = func(o *RankOptions)
+
+func RankOptionCategory(v Category) RankOption {
+	return func(o *RankOptions) {
+		o.category = v
 	}
-	if !strings.HasSuffix(u.Path, "/") {
-		u.Path += "/"
-	}
-	if r.Category != "" {
-		u.Path += fmt.Sprintf("chn%s/", string(r.Category))
-	}
-	if r.Year != 0 {
-		u.Path += fmt.Sprintf("year%d-month%02d/", r.Year, r.Month)
-	} else if r.Month != 0 {
-		u.Path += fmt.Sprintf("month%02d/", r.Month)
-	}
-	if r.Page > 1 {
-		u.Path += fmt.Sprintf("page%d/", r.Page)
-	}
-	return u.String()
 }
 
-// Fetch rank, return 20 book in order.
-func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
-	var u = r.URL()
-	if u == "" {
-		return nil, errors.New("qidian: invalid rank url")
+// RankOptionYearMonth set rank period, not all rank support this.
+func RankOptionYearMonth(year int, month time.Month) RankOption {
+	return func(o *RankOptions) {
+		o.year = year
+		o.month = month
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
+}
+
+// RankOptionMonth set rank period, not all rank support this.
+func RankOptionMonth(month time.Month) RankOption {
+	return func(o *RankOptions) {
+		o.month = month
+	}
+}
+
+// RankOptionPage set wanted page, start from 1.
+func RankOptionPage(page int) RankOption {
+	return func(o *RankOptions) {
+		o.page = page
+	}
+}
+
+func RankURL(rt RankType, opts ...RankOption) (ret *url.URL) {
+	var args = new(RankOptions)
+	for _, i := range opts {
+		i(args)
+	}
+	ret, err := url.Parse(rt.URL)
 	if err != nil {
-		return nil, err
+		return
 	}
-	req.AddCookie(&http.Cookie{
-		Name:  "listStyle",
-		Value: "2",
-	})
-	resp, err := client.For(ctx).Do(req)
-	if err != nil {
-		return nil, err
+	if !strings.HasSuffix(ret.Path, "/") {
+		ret.Path += "/"
 	}
+	if args.category != "" {
+		ret.Path += fmt.Sprintf("chn%s/", string(args.category))
+	}
+	if args.year != 0 {
+		ret.Path += fmt.Sprintf("year%d-month%02d/", args.year, args.month)
+	} else if args.month != 0 {
+		ret.Path += fmt.Sprintf("month%02d/", args.month)
+	}
+	if args.page > 1 {
+		ret.Path += fmt.Sprintf("page%d/", args.page)
+	}
+	return
+}
+
+type RankResult struct {
+	Response *http.Response
+	RankType RankType
+}
+
+func (r RankResult) Books() ([]Book, error) {
+	var resp = r.Response
 	defer resp.Body.Close()
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
@@ -260,7 +278,22 @@ func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
 	}
 	table := doc.Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", u)
+		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", resp.Request.URL)
 	}
-	return parseTable(table, r.Type.ColumnParser, r.Type.Site)
+	return parseTable(table, r.RankType.ColumnParser, r.RankType.Site)
+}
+
+func Rank(ctx context.Context, rt RankType, opts ...RankOption) (ret RankResult, err error) {
+	ret.RankType = rt
+	u := RankURL(rt, opts...)
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return
+	}
+	req.AddCookie(&http.Cookie{
+		Name:  "listStyle",
+		Value: "2",
+	})
+	ret.Response, err = client.For(ctx).Do(req)
+	return
 }
