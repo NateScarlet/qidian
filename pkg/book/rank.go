@@ -235,7 +235,7 @@ func (r Rank) URL() string {
 	return u.String()
 }
 
-// Fetch rank, return 50 book in order.
+// Fetch rank, return 20 book in order.
 func (r Rank) Fetch(ctx context.Context) ([]Book, error) {
 	var u = r.URL()
 	if u == "" {
