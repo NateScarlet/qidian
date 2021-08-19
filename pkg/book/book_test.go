@@ -32,8 +32,8 @@ func TestBook_Fetch(t *testing.T) {
 	var err = b.Fetch(ctx)
 	require.NoError(t, err)
 	snapshotBook(t, b)
-	assert.Equal(t, uint64(987300), b.WordCount)
-	assert.LessOrEqual(t, uint64(94200), b.TotalRecommendCount)
+	assert.NotEmpty(t, b.WordCount)
+	assert.NotEmpty(t, b.TotalRecommendCount)
 }
 
 func TestBook_Fetch_Free(t *testing.T) {
@@ -43,6 +43,6 @@ func TestBook_Fetch_Free(t *testing.T) {
 	var err = b.Fetch(ctx)
 	require.NoError(t, err)
 	snapshotBook(t, b)
-	assert.Equal(t, uint64(731700), b.WordCount)
-	assert.LessOrEqual(t, uint64(476300), b.TotalRecommendCount)
+	assert.NotEmpty(t, b.WordCount)
+	assert.NotEmpty(t, b.TotalRecommendCount)
 }
