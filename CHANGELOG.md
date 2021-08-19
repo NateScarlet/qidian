@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/NateScarlet/qidian/compare/v0.1.7...v0.1.8) (2021-08-19)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/natescarlet/snapshot to v0.6.0 ([709e584](https://github.com/NateScarlet/qidian/commit/709e584ae51bb444d0accc6ce7ec35fa57421834))
+* **deps:** update module github.com/puerkitobio/goquery to v1.7.0 ([513c265](https://github.com/NateScarlet/qidian/commit/513c2650a6ac620a81dce350e8af21be0d632223))
+* **deps:** update module github.com/puerkitobio/goquery to v1.7.1 ([d3c46f7](https://github.com/NateScarlet/qidian/commit/d3c46f71f3f5d9dff002e5724c3bac409ec77ce3))
+* follow site change ([bf9f05e](https://github.com/NateScarlet/qidian/commit/bf9f05e1d9e9c9a99ca5c5c1436d5f3ed44922b6))
+
 ### [0.1.7](https://github.com/NateScarlet/qidian/compare/v0.1.6...v0.1.7) (2021-01-13)
 
 
