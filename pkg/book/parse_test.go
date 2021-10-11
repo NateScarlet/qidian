@@ -26,6 +26,11 @@ func Test_parseCount(t *testing.T) {
 			args: args{"123.45万"},
 			want: 1234500,
 		},
+		{
+			name: "empty",
+			args: args{"- -"},
+			want: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

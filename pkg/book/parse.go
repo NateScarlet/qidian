@@ -15,6 +15,9 @@ import (
 
 // ParseCount that may contains "万" or thousand period.
 func ParseCount(v string) (uint64, error) {
+	if v == "- -" {
+		return 0, nil
+	}
 	v = strings.TrimSpace(v)
 	is10K := strings.HasSuffix(v, "万")
 	if is10K {
