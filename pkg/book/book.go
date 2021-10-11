@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -46,6 +46,9 @@ func (b Book) URL() string {
 	return "https://book.qidian.com/info/" + b.ID
 }
 
+var categoryURLPattern = regexp.MustCompile(`//www\.qidian\.com/all/chanId(\d+)-subCateId(\d+)/`)
+var authorURLPattern = regexp.MustCompile(`//my\.qidian\.com/author/(\d+)/`)
+
 // Fetch book from info page.
 func (b *Book) Fetch(ctx context.Context) (err error) {
 	if b.ID == "" {
@@ -72,8 +75,11 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	writerElem := infoElem.Find("a.writer")
 	writerElem.Parent().Remove()
 	b.Author.Name = writerElem.Text()
-	if href := writerElem.AttrOr("href", ""); strings.HasPrefix(href, "//me.qidian.com/authorIndex.aspx?id=") {
-		b.Author.ID = href[36:]
+	if href := writerElem.AttrOr("href", ""); href != "" {
+		var match = authorURLPattern.FindStringSubmatch(href)
+		if len(match) == 2 {
+			b.Author.ID = match[1]
+		}
 	}
 
 	// Title
@@ -85,15 +91,9 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		if !ok {
 			return
 		}
-		u, err := url.Parse(href)
-		if err != nil {
-			return
-		}
-		if s := u.Query().Get("chanId"); s != "" {
-			b.Category = Category(s)
-		}
-		if s := u.Query().Get("subCateId"); s != "" {
-			b.SubCategory = SubCategory(s)
+		for _, match := range categoryURLPattern.FindAllStringSubmatch(href, -1) {
+			b.Category = Category(match[1])
+			b.SubCategory = SubCategory(match[2])
 		}
 	})
 
