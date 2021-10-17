@@ -57,6 +57,9 @@ func TestCategorySearch_simple(t *testing.T) {
 				i(opt)
 			}
 			assert.Len(t, books, 20)
+			var hasWeekRecommendCount bool
+			var hasMonthRecommendCount bool
+			var hasTotalRecommendCount bool
 			for _, i := range books {
 				assert.NotEmpty(t, i.ID)
 				assert.NotEmpty(t, i.Title)
@@ -71,18 +74,21 @@ func TestCategorySearch_simple(t *testing.T) {
 				if opt.sort == "" {
 					assert.NotEmpty(t, i.LastUpdated)
 				}
-				if opt.sort == SortWeekRecommend {
-					assert.NotEmpty(t, i.WeekRecommendCount)
-				}
-				if opt.sort == SortMonthRecommend {
-					assert.NotEmpty(t, i.MonthRecommendCount)
-				}
-				if opt.sort == SortTotalRecommend {
-					assert.NotEmpty(t, i.TotalRecommendCount)
-				}
 				if opt.sort == SortRecentFinished {
 					assert.NotEmpty(t, i.Finished)
 				}
+				hasWeekRecommendCount = hasWeekRecommendCount || i.WeekRecommendCount > 0
+				hasMonthRecommendCount = hasMonthRecommendCount || i.MonthRecommendCount > 0
+				hasTotalRecommendCount = hasTotalRecommendCount || i.TotalRecommendCount > 0
+			}
+			if opt.sort == SortWeekRecommend {
+				assert.True(t, hasWeekRecommendCount)
+			}
+			if opt.sort == SortMonthRecommend {
+				assert.True(t, hasMonthRecommendCount)
+			}
+			if opt.sort == SortTotalRecommend {
+				assert.True(t, hasTotalRecommendCount)
 			}
 			if snapshot.DefaultUpdate {
 				snapshot.MatchJSON(t, books)
