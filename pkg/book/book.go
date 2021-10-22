@@ -144,7 +144,7 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	}
 
 	// LastUpdated
-	b.LastUpdated, err = ParseTime(stateElem.Find(".update .time").Text())
+	b.LastUpdated, err = ParseTime(stateElem.Find(".update .time").First().Text())
 	if err != nil {
 		return err
 	}
