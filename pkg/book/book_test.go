@@ -28,7 +28,7 @@ func snapshotBook(t *testing.T, book Book, opts ...snapshot.Option) {
 func TestBook_Fetch(t *testing.T) {
 	var ctx = context.Background()
 
-	var b = Book{ID: "1"}
+	var b = Book{ID: "1004608738"}
 	var err = b.Fetch(ctx)
 	require.NoError(t, err)
 	snapshotBook(t, b)
