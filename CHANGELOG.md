@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/NateScarlet/qidian/compare/v0.2.2...v0.2.3) (2021-12-11)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/puerkitobio/goquery to v1.8.0 ([a469b25](https://github.com/NateScarlet/qidian/commit/a469b2548d5e75a81e7fff583cddf57ddc329577))
+* update categories: 黑暗幻想 -> 神秘幻想 ([6ea7f30](https://github.com/NateScarlet/qidian/commit/6ea7f30790a3bb6f81d787ea9cfc228bef91443c))
+
 ### [0.2.2](https://github.com/NateScarlet/qidian/compare/v0.2.1...v0.2.2) (2021-10-22)
 
 
