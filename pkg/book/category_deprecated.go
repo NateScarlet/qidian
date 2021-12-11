@@ -4,4 +4,5 @@ package book
 var (
 	SC青春日常   = SC恋爱日常
 	SC青春日常mm = SC恋爱日常mm
+	SC黑暗幻想   = SC神秘幻想
 )

@@ -61,7 +61,7 @@ const (
     SC文学艺术 SubCategory = "20106"
     SC成功励志 SubCategory = "20107"
     SC青春文学 SubCategory = "20108"
-    SC黑暗幻想 SubCategory = "202"
+    SC神秘幻想 SubCategory = "202"
     SC国术无双 SubCategory = "206"
     SC神话修真 SubCategory = "207"
     SC现实百态 SubCategory = "209"
@@ -413,7 +413,7 @@ func (sc SubCategory) Parent() Category {
         return C现实
     case SC青春文学:
         return C现实
-    case SC黑暗幻想:
+    case SC神秘幻想:
         return C奇幻
     case SC国术无双:
         return C武侠
@@ -709,8 +709,8 @@ func (sc SubCategory) String() string {
         return "成功励志"
     case SC青春文学:
         return "青春文学"
-    case SC黑暗幻想:
-        return "黑暗幻想"
+    case SC神秘幻想:
+        return "神秘幻想"
     case SC国术无双:
         return "国术无双"
     case SC神话修真:
@@ -1007,7 +1007,7 @@ func (c SubCategory) Site() string {
         return ""
     case SC青春文学:
         return ""
-    case SC黑暗幻想:
+    case SC神秘幻想:
         return ""
     case SC国术无双:
         return ""
@@ -1303,8 +1303,8 @@ func SubCategoryByName(name, site string) SubCategory {
         return SC成功励志
     case name == "青春文学" && site == "":
         return SC青春文学
-    case name == "黑暗幻想" && site == "":
-        return SC黑暗幻想
+    case name == "神秘幻想" && site == "":
+        return SC神秘幻想
     case name == "国术无双" && site == "":
         return SC国术无双
     case name == "神话修真" && site == "":
