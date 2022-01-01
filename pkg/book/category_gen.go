@@ -14,6 +14,7 @@ const (
     C现实 Category = "15"
     C武侠 Category = "2"
     C短篇 Category = "20076"
+    C诸天无限 Category = "20109"
     C玄幻 Category = "21"
     C仙侠 Category = "22"
     C短篇mm Category = "30083"
@@ -61,6 +62,9 @@ const (
     SC文学艺术 SubCategory = "20106"
     SC成功励志 SubCategory = "20107"
     SC青春文学 SubCategory = "20108"
+    SC无限 SubCategory = "20110"
+    SC诸天 SubCategory = "20111"
+    SC综漫 SubCategory = "20112"
     SC神秘幻想 SubCategory = "202"
     SC国术无双 SubCategory = "206"
     SC神话修真 SubCategory = "207"
@@ -196,6 +200,8 @@ func (c Category) String() string {
         return "武侠"
     case C短篇:
         return "短篇"
+    case C诸天无限:
+        return "诸天无限"
     case C玄幻:
         return "玄幻"
     case C仙侠:
@@ -255,6 +261,8 @@ func (c Category) Site() string {
         return ""
     case C短篇:
         return ""
+    case C诸天无限:
+        return ""
     case C玄幻:
         return ""
     case C仙侠:
@@ -313,6 +321,8 @@ func CategoryByName(name, site string) Category {
         return C武侠
     case name == "短篇" && site == "":
         return C短篇
+    case name == "诸天无限" && site == "":
+        return C诸天无限
     case name == "玄幻" && site == "":
         return C玄幻
     case name == "仙侠" && site == "":
@@ -413,6 +423,12 @@ func (sc SubCategory) Parent() Category {
         return C现实
     case SC青春文学:
         return C现实
+    case SC无限:
+        return C诸天无限
+    case SC诸天:
+        return C诸天无限
+    case SC综漫:
+        return C诸天无限
     case SC神秘幻想:
         return C奇幻
     case SC国术无双:
@@ -709,6 +725,12 @@ func (sc SubCategory) String() string {
         return "成功励志"
     case SC青春文学:
         return "青春文学"
+    case SC无限:
+        return "无限"
+    case SC诸天:
+        return "诸天"
+    case SC综漫:
+        return "综漫"
     case SC神秘幻想:
         return "神秘幻想"
     case SC国术无双:
@@ -1007,6 +1029,12 @@ func (c SubCategory) Site() string {
         return ""
     case SC青春文学:
         return ""
+    case SC无限:
+        return ""
+    case SC诸天:
+        return ""
+    case SC综漫:
+        return ""
     case SC神秘幻想:
         return ""
     case SC国术无双:
@@ -1303,6 +1331,12 @@ func SubCategoryByName(name, site string) SubCategory {
         return SC成功励志
     case name == "青春文学" && site == "":
         return SC青春文学
+    case name == "无限" && site == "":
+        return SC无限
+    case name == "诸天" && site == "":
+        return SC诸天
+    case name == "综漫" && site == "":
+        return SC综漫
     case name == "神秘幻想" && site == "":
         return SC神秘幻想
     case name == "国术无双" && site == "":
