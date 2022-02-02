@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/NateScarlet/qidian/compare/v0.2.4...v0.2.5) (2022-02-02)
+
+
+### Bug Fixes
+
+* follow author page change ([d8ed1b6](https://github.com/NateScarlet/qidian/commit/d8ed1b6cfbb0808b712c9dbc21f470e5b6e70729))
+
 ### [0.2.4](https://github.com/NateScarlet/qidian/compare/v0.2.3...v0.2.4) (2022-01-01)
 
 
