@@ -48,7 +48,7 @@ func (a *Author) Fetch(ctx context.Context) (err error) {
 	}
 
 	// name
-	if nodes := doc.Find(".header-msg > h3").Nodes; len(nodes) == 1 {
+	if nodes := doc.Find(".header-msg > h1").Nodes; len(nodes) == 1 {
 		n := nodes[0].FirstChild
 		if n != nil && n.Type == html.TextNode {
 			a.Name = n.Data
