@@ -41,6 +41,9 @@ func Get(url string) (*sfnt.Font, error) {
 		Cache.Add(url, v)
 		return v, nil
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return v.(*sfnt.Font), err
 }
