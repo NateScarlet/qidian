@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/NateScarlet/qidian/compare/v0.2.5...v0.2.6) (2022-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/stretchr/testify to v1.7.1 ([18121b1](https://github.com/NateScarlet/qidian/commit/18121b1e7922671a7a5a91190a1f8e01fc52cf1f))
+* should handle font get error ([8eeb1f1](https://github.com/NateScarlet/qidian/commit/8eeb1f1597be0e621f4e5d0d7f6ba37f72509416))
+
 ### [0.2.5](https://github.com/NateScarlet/qidian/compare/v0.2.4...v0.2.5) (2022-02-02)
 
 
