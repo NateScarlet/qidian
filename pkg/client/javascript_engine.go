@@ -17,6 +17,10 @@ type nodeJSEngine struct {
 	nodePath string
 }
 
+func NewNodeJSEngine(nodePath string) JavaScriptEngine {
+	return nodeJSEngine{nodePath}
+}
+
 // Run implements JavaScriptEngine
 func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, err error) {
 	var cmd = exec.CommandContext(ctx, e.nodePath, "-")
@@ -59,16 +63,12 @@ const code = `)
 	return strings.TrimRight(stdout.String(), "\n"), nil
 }
 
-type errorJSEngine struct {
+type errJSEngine struct {
 	err error
 }
 
-func (e errorJSEngine) Run(ctx context.Context, unsafeJS string) (output string, err error) {
+func (e errJSEngine) Run(ctx context.Context, unsafeJS string) (output string, err error) {
 	return "", e.err
-}
-
-func NewNodeJSEngine(nodePath string) JavaScriptEngine {
-	return nodeJSEngine{nodePath}
 }
 
 var DefaultJavaScriptEngine JavaScriptEngine
@@ -76,7 +76,7 @@ var DefaultJavaScriptEngine JavaScriptEngine
 func init() {
 	var nodePath, err = exec.LookPath("node")
 	if err != nil {
-		DefaultJavaScriptEngine = errorJSEngine{
+		DefaultJavaScriptEngine = errJSEngine{
 			fmt.Errorf("qidian: client: nodejs executable not found, please configure DefaultJavaScriptEngine manually"),
 		}
 		return
