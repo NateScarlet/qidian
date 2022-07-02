@@ -3,6 +3,7 @@ package book
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -43,7 +44,7 @@ type Book struct {
 
 // URL of book info page on website.
 func (b Book) URL() string {
-	return "https://book.qidian.com/info/" + b.ID
+	return "https://book.qidian.com/info/" + b.ID + "/"
 }
 
 var categoryURLPattern = regexp.MustCompile(`//www\.qidian\.com/all/chanId(\d+)-subCateId(\d+)/`)
@@ -55,7 +56,14 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		return errors.New("qidian: empty book id")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", b.URL(), nil)
+	var url = b.URL()
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("url=%s: %w", url, err)
+		}
+	}()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return err
 	}
@@ -64,10 +72,17 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		return err
 	}
 	defer resp.Body.Close()
+
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if err != nil {
+			html, _ := doc.Html()
+			err = fmt.Errorf("document=%s:\n%w", html, err)
+		}
+	}()
 	infoElem := doc.Find(".book-info").Clone()
 	stateElem := doc.Find(".book-state")
 
