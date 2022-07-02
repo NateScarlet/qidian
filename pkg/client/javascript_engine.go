@@ -28,7 +28,7 @@ func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, 
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	_, err = stdin.WriteString(`
-const vm = require('node:vm');
+const vm = require('vm');
 
 const code = `)
 	if err != nil {
