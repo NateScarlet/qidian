@@ -71,18 +71,18 @@ func NewNodeJSEngine(nodePath string) JavaScriptEngine {
 	return nodeJSEngine{nodePath}
 }
 
-var DefaultJSEngine JavaScriptEngine
+var DefaultJavaScriptEngine JavaScriptEngine
 
 func init() {
 	var nodePath, err = exec.LookPath("node")
 	if err != nil {
-		DefaultJSEngine = errorJSEngine{
-			fmt.Errorf("qidian: client: nodejs executable not found, please configure DefaultJSEngine manually"),
+		DefaultJavaScriptEngine = errorJSEngine{
+			fmt.Errorf("qidian: client: nodejs executable not found, please configure DefaultJavaScriptEngine manually"),
 		}
 		return
 	}
 
-	DefaultJSEngine = NewNodeJSEngine(nodePath)
+	DefaultJavaScriptEngine = NewNodeJSEngine(nodePath)
 }
 
 type contextKeyJavaScriptEngine struct{}
@@ -95,5 +95,5 @@ func ContextJavaScriptEngine(ctx context.Context) JavaScriptEngine {
 	if jsEngine, ok := ctx.Value(contextKeyJavaScriptEngine{}).(JavaScriptEngine); ok {
 		return jsEngine
 	}
-	return DefaultJSEngine
+	return DefaultJavaScriptEngine
 }
