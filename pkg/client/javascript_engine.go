@@ -77,7 +77,7 @@ func init() {
 	var nodePath, err = exec.LookPath("node")
 	if err != nil {
 		DefaultJSEngine = errorJSEngine{
-			fmt.Errorf("qidian: client: nodejs executable not found, please configure javascript engine"),
+			fmt.Errorf("qidian: client: nodejs executable not found, please configure DefaultJSEngine manually"),
 		}
 		return
 	}
