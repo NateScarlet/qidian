@@ -11,6 +11,7 @@ import (
 )
 
 type JavaScriptEngine interface {
+	// Run unsafeJS code, supports `eval` `escape`.
 	Run(ctx context.Context, unsafeJS string) (output string, err error)
 }
 
@@ -34,11 +35,15 @@ var nodeJSRunTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 {{- /* */ -}}
 
 const vm = require('vm');
-
 const code = {{ . | toJSON }};
+const ctx = vm.createContext({eval: vmEval, escape})
 
+function vmEval(code) {
+	return vm.runInContext(code, ctx)
+};
+ctx.eval = vmEval;
 (async () => {
-	console.log(await vm.runInNewContext(code));
+	console.log(await vmEval(code));
 })().catch((err) => {
 	console.error(err);
 	process.exit(1);
@@ -61,6 +66,7 @@ func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, 
 	err = cmd.Run()
 	if err != nil {
 		if stderr.Len() > 0 {
+			print(stderr.String())
 			err = fmt.Errorf("%w: %s", err, stderr.String())
 		}
 		return
