@@ -9,7 +9,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var jsCookieSrcCode = template.Must(template.New("").Parse(`
+var jsCookieTemplates = template.New("")
+
+func init() {
+	jsCookieTemplates = template.Must(jsCookieTemplates.New("window").Parse(`
 {{- /* */ -}}
 const window = {
 	location: {
@@ -17,6 +20,10 @@ const window = {
 		host: "{{.URL.Host}}",
 	},
 };
+`))
+	jsCookieTemplates = template.Must(jsCookieTemplates.New("src").Parse(`
+{{- /* */ -}}
+{{ template "window" . }}
 const document = {
 	createElement(tag) {
 		return {};
@@ -39,6 +46,7 @@ const document = {
 
 document.ret;
 `))
+}
 
 func jsCookieSrc(ctx context.Context, rawURL string, doc goquery.Document) (src string, err error) {
 	var scriptEl = doc.Find("script#_rspj")
@@ -51,7 +59,7 @@ func jsCookieSrc(ctx context.Context, rawURL string, doc goquery.Document) (src 
 	if err != nil {
 		return
 	}
-	err = jsCookieSrcCode.Execute(&b, struct {
+	err = jsCookieTemplates.Lookup("src").Execute(&b, struct {
 		URL  url.URL
 		Code string
 	}{*u, scriptEl.Text()})
@@ -60,3 +68,24 @@ func jsCookieSrc(ctx context.Context, rawURL string, doc goquery.Document) (src 
 	}
 	return jsEngine.Run(ctx, b.String())
 }
+
+// func jsCookieValue(ctx context.Context, rawURL string, script string) (src string, err error) {
+// 	var scriptEl = doc.Find("script#_rspj")
+// 	if scriptEl.Length() == 0 {
+// 		return "", nil
+// 	}
+// 	var jsEngine = ContextJavaScriptEngine(ctx)
+// 	var b bytes.Buffer
+// 	u, err := url.Parse(rawURL)
+// 	if err != nil {
+// 		return
+// 	}
+// 	err = jsCookieTemplates.Execute(&b, struct {
+// 		URL  url.URL
+// 		Code string
+// 	}{*u, scriptEl.Text()})
+// 	if err != nil {
+// 		return
+// 	}
+// 	return jsEngine.Run(ctx, b.String())
+// }
