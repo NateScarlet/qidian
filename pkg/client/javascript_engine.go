@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"text/template"
 )
 
 type JavaScriptEngine interface {
@@ -21,32 +22,36 @@ func NewNodeJSEngine(nodePath string) JavaScriptEngine {
 	return nodeJSEngine{nodePath}
 }
 
-// Run implements JavaScriptEngine
-func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, err error) {
-	var cmd = exec.CommandContext(ctx, e.nodePath, "-")
-	var stdin bytes.Buffer
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	_, err = stdin.WriteString(`
+var nodeJSRunTemplate = template.Must(template.New("").Funcs(template.FuncMap{
+	"toJSON": func(s string) (_ string, err error) {
+		data, err := json.Marshal(s)
+		if err != nil {
+			return
+		}
+		return string(data), nil
+	},
+}).Parse(`
+{{- /* */ -}}
+
 const vm = require('vm');
 
-const code = `)
-	if err != nil {
-		return
-	}
-	var encoder = json.NewEncoder(&stdin)
-	err = encoder.Encode(unsafeJS)
-	if err != nil {
-		return
-	}
-	_, err = stdin.WriteString(`;
+const code = {{ . | toJSON }};
+
 (async () => {
 	console.log(await vm.runInNewContext(code));
 })().catch((err) => {
 	console.error(err);
 	process.exit(1);
 })
-`)
+`))
+
+// Run implements JavaScriptEngine
+func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, err error) {
+	var cmd = exec.CommandContext(ctx, e.nodePath, "-")
+	var stdin bytes.Buffer
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	err = nodeJSRunTemplate.Execute(&stdin, unsafeJS)
 	if err != nil {
 		return
 	}

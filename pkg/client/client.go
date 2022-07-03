@@ -4,17 +4,23 @@ package client
 import (
 	"context"
 	"net/http"
+	"net/http/cookiejar"
 )
 
 type contextKey struct{}
+
+var Default = new(http.Client)
+
+func init() {
+	Default.Jar, _ = cookiejar.New(nil)
+}
 
 // For get client from context.
 func For(ctx context.Context) *http.Client {
 	v, _ := ctx.Value(contextKey{}).(*http.Client)
 	if v == nil {
-		return http.DefaultClient
+		return Default
 	}
-
 	return v
 }
 
