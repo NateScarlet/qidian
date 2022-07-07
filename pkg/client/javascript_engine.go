@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -21,7 +22,11 @@ type nodeJSEngine struct {
 
 func NewNodeJSEngine(nodePath string) JavaScriptEngine {
 	return nodeJSEngine{nodePath}
+
 }
+
+//go:embed javascript_engine.node.runner.cjs
+var nodeRunnerJS string
 
 var nodeJSRunTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 	"toJSON": func(s string) (_ string, err error) {
@@ -31,23 +36,17 @@ var nodeJSRunTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 		}
 		return string(data), nil
 	},
+	"__DEBUG__": func() bool {
+		return isDebug
+	},
+	"runnerJS": func() string {
+		return nodeRunnerJS
+	},
 }).Parse(`
-{{- /* */ -}}
+const __DEBUG__ = {{ __DEBUG__ }};
+const __CODE__ = {{ . | toJSON }};
 
-const vm = require('vm');
-const code = {{ . | toJSON }};
-const ctx = vm.createContext({eval: vmEval, escape})
-
-function vmEval(code) {
-	return vm.runInContext(code, ctx)
-};
-ctx.eval = vmEval;
-(async () => {
-	console.log(await vmEval(code));
-})().catch((err) => {
-	console.error(err);
-	process.exit(1);
-})
+{{ runnerJS }}
 `))
 
 // Run implements JavaScriptEngine

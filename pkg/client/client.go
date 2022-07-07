@@ -5,7 +5,10 @@ import (
 	"context"
 	"net/http"
 	"net/http/cookiejar"
+	"os"
 )
+
+var isDebug = os.Getenv("DEBUG") == "qidian.client"
 
 type contextKey struct{}
 
