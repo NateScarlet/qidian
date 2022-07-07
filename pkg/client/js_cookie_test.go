@@ -40,12 +40,12 @@ func TestJSCookieTODO(t *testing.T) {
 
 	script1, _, err := jsCookieSrc(ctx, "https://book.qidian.com/info/1004608738/", *doc)
 	require.NoError(t, err)
-	script2, err := ioutil.ReadFile("53f27290_v1.local.js")
+	script2, err := ioutil.ReadFile("js_cookie_sample.js")
 	require.NoError(t, err)
 
 	cookie, err := jsCookieTODO(ctx, "https://book.qidian.com/info/1004608738/", script1, string(script2))
 	require.NoError(t, err)
-	assert.Equal(t, "Cc2838679FT=637r_mbhoxLVqqqDrBeuv6GSwOE3JJrUxnpmSQijotp0e6RrRDwrrX72PompklXYQ0gWXAVUKLZU2DjBRFH3cl26JzdrfbRouCsrbv.M7rfEGPZJ769dPXxDiWVGU9_dKIpwxVOxtKrin1TpyX_MAwVMnzfo5lZF5XjmQuqHg_Qma; path=/; expires=Thu, 14 Jul 2022 18:31:33 GMT", cookie)
+	assert.Regexp(t, "^Cc2838679FT=.{173}; path=/; expires=.{29}$", cookie)
 }
 
 // func TestJSCookieTODO2(t *testing.T) {

@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 let evalCount = 0;
-const readFromFile = true;
+const readFromFile = false;
 
 function onEval(code) {
   evalCount += 1;

@@ -711,7 +711,6 @@ const { window, document } = (function () {
           }),
           setTimeout(cb, d) {
             if (d === 0) {
-              cb();
               return;
             }
             throw ["setTimeout", ...arguments];
