@@ -1,3 +1,4 @@
+// @ts-check
 /// <reference no-default-lib="true" />
 /// <reference types="./js_cookie.env"/>
 
@@ -218,7 +219,15 @@ const { window, document } = (function () {
     "location",
     "top",
   ];
-  const proxy = (obj, possibleProps) =>
+
+  /**
+   *
+   * @template { {} } T
+   * @param {T} obj
+   * @param {string[]=} possibleProps
+   * @returns {T}
+   */
+  const proxyGet = (obj, possibleProps) =>
     new Proxy(obj, {
       get(obj, prop) {
         if (prop in obj) {
@@ -234,16 +243,39 @@ const { window, document } = (function () {
       },
     });
 
-  const div = proxy({
+  /**
+   *
+   * @template { {} } T
+   * @param {T} obj
+   * @param {string[]=} possibleProps
+   * @returns {T}
+   */
+  const proxySet = (obj, possibleProps) =>
+    new Proxy(obj, {
+      get(obj, prop) {
+        if (prop in obj) {
+          return obj[prop];
+        }
+        if (typeof prop === "symbol") {
+          return;
+        }
+        if (possibleProps != null && !possibleProps.includes(prop)) {
+          return;
+        }
+        throw new Error(`get obj(${Object.keys(obj)}).${prop}`);
+      },
+    });
+
+  const div = proxyGet({
     getElementsByTagName(name) {
       if (name === "i") {
-        return proxy([undefined]);
+        return proxyGet([undefined]);
       }
       throw ["div.getElementsByTagName", ...arguments, this];
     },
   });
-  const document = proxy({
-    head: proxy({
+  const document = proxyGet({
+    head: proxyGet({
       children: [],
       appendChild(el) {
         this.children.push(el);
@@ -251,7 +283,7 @@ const { window, document } = (function () {
     }),
     createElement(tag) {
       if (tag === "script") {
-        return proxy({
+        return proxyGet({
           readyState: undefined,
         });
       }
@@ -262,19 +294,19 @@ const { window, document } = (function () {
     },
     getElementsByTagName(name) {
       if (name === "head") {
-        return proxy([this.head]);
+        return proxyGet([this.head]);
       }
       throw new Error("document.getElementsByTagName(" + name + ")");
     },
     characterSet: "UTF-8",
     getElementById(id) {
       if (id === "__anchor__") {
-        return proxy({});
+        return proxyGet({});
       }
       throw ["getElementById", ...arguments, this];
     },
   });
-  const window = proxy(
+  const window = proxyGet(
     {
       eval,
       escape,
@@ -283,9 +315,9 @@ const { window, document } = (function () {
       isFinite: Number.isFinite,
       JSON,
       document,
-      DOMParser: proxy({}),
+      DOMParser: proxyGet({}),
       RegExp,
-      location: proxy({
+      location: proxyGet({
         protocol: "{{.URL.Scheme}}:",
         host: "{{.URL.Host}}",
         href: "{{.URL.String}}",

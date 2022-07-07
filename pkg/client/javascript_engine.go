@@ -43,6 +43,7 @@ var nodeJSRunTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 		return nodeRunnerJS
 	},
 }).Parse(`
+"use strict";
 const __DEBUG__ = {{ __DEBUG__ }};
 const __CODE__ = {{ . | toJSON }};
 

@@ -1,3 +1,4 @@
+// @ts-check
 /// <reference no-default-lib="true" />
 /// <reference types="./javascript_engine.node.env"/>
 
