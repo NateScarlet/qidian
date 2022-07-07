@@ -233,13 +233,16 @@ const { window, document } = (function () {
         if (prop in obj) {
           return obj[prop];
         }
-        if (typeof prop === "symbol") {
+        if (
+          typeof prop === "string" &&
+          possibleProps &&
+          !possibleProps.includes(prop)
+        ) {
           return;
         }
-        if (possibleProps != null && !possibleProps.includes(prop)) {
-          return;
-        }
-        throw new Error(`get obj(${Object.keys(obj)}).${prop}`);
+        throw new Error(
+          `unexpected get obj(${Object.keys(obj)}).${String(prop)}`
+        );
       },
     });
 
@@ -252,17 +255,22 @@ const { window, document } = (function () {
    */
   const proxySet = (obj, possibleProps) =>
     new Proxy(obj, {
-      get(obj, prop) {
+      set(obj, prop, value) {
         if (prop in obj) {
-          return obj[prop];
+          obj[prop] = value;
+          return true;
         }
-        if (typeof prop === "symbol") {
-          return;
+        if (
+          typeof prop === "string" &&
+          possibleProps != null &&
+          possibleProps.includes(prop)
+        ) {
+          obj[prop] = value;
+          return true;
         }
-        if (possibleProps != null && !possibleProps.includes(prop)) {
-          return;
-        }
-        throw new Error(`get obj(${Object.keys(obj)}).${prop}`);
+        throw new Error(
+          `unexpected set obj(${Object.keys(obj)}).${String(prop)} = ${value}`
+        );
       },
     });
 
@@ -276,7 +284,14 @@ const { window, document } = (function () {
   });
   const document = proxyGet({
     head: proxyGet({
+      /**
+       * @type {unknown[]}
+       */
       children: [],
+      /**
+       *
+       * @param {unknown} el
+       */
       appendChild(el) {
         this.children.push(el);
       },
@@ -306,53 +321,92 @@ const { window, document } = (function () {
       throw ["getElementById", ...arguments, this];
     },
   });
-  const window = proxyGet(
-    {
-      eval,
-      escape,
-      Number,
-      decodeURIComponent,
-      isFinite: Number.isFinite,
-      JSON,
-      document,
-      DOMParser: proxyGet({}),
-      RegExp,
-      location: proxyGet({
-        protocol: "{{.URL.Scheme}}:",
-        host: "{{.URL.Host}}",
-        href: "{{.URL.String}}",
-        port: "",
-      }),
-      setTimeout(cb, d) {
-        if (d === 0) {
-          cb();
-          return;
-        }
-        throw ["setTimeout", ...arguments];
-      },
-      setInterval() {
-        throw ["setInterval", ...arguments];
-      },
-      XMLHttpRequest() {
-        throw arguments;
-      },
-      top: undefined,
-      addEventListener(name, cb) {
-        if (name === "load") {
-          this.onload = cb;
-          return;
-        }
-        if (name === "unload") {
-          this.onunload = cb;
-          return;
-        }
-        throw arguments;
-      },
-    },
-    windowPossibleProps
+  const onload = [() => {}];
+  const onunload = [() => {}];
+  const window = proxySet(
+    new Proxy(
+      proxyGet(
+        {
+          eval,
+          escape,
+          Number,
+          /** @type {unknown} */
+          get top() {
+            return window;
+          },
+          decodeURIComponent,
+          isFinite: Number.isFinite,
+          JSON,
+          document,
+          DOMParser: proxyGet({}),
+          RegExp,
+          location: proxyGet({
+            protocol: "{{.URL.Scheme}}:",
+            host: "{{.URL.Host}}",
+            href: "{{.URL.String}}",
+            port: "",
+          }),
+          setTimeout(cb, d) {
+            if (d === 0) {
+              cb();
+              return;
+            }
+            throw ["setTimeout", ...arguments];
+          },
+          setInterval() {
+            throw ["setInterval", ...arguments];
+          },
+          XMLHttpRequest() {
+            throw arguments;
+          },
+          onload: () => {},
+          onunload: () => {},
+          addEventListener(name, cb) {
+            if (name === "load") {
+              onload.push(cb);
+              return;
+            }
+            if (name === "unload") {
+              onunload.push(cb);
+              return;
+            }
+            throw arguments;
+          },
+          /**
+           *
+           * @param { {type: string} } e
+           */
+          dispatchEvent(e) {
+            if (e.type === "load") {
+              this.onload();
+              onload.forEach((i) => i());
+              return;
+            }
+            if (e.type === "unload") {
+              this.onunload();
+              onunload.forEach((i) => i());
+              return;
+            }
+            throw arguments;
+          },
+          $_ts: undefined,
+          "2eab37c0ead4b0b0": undefined,
+          $b_onBridgeReady: undefined,
+          $b_setup: undefined,
+        },
+
+        windowPossibleProps
+      ),
+      {
+        set(obj, prop, value) {
+          obj[prop] = value;
+          globalThis[prop] = value;
+          return true;
+        },
+      }
+    )
   );
 
-  window.top = window;
   return {
     window,
     document,

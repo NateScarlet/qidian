@@ -4,6 +4,7 @@
 
 const vm = require("vm");
 const ctx = vm.createContext({ eval: vmEval, escape, unescape });
+
 function vmEval(code) {
   if (__DEBUG__) {
     const debug = require("./debug");

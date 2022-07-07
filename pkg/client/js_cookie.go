@@ -23,22 +23,23 @@ func init() {
 
 	jsCookieTemplates = template.Must(jsCookieTemplates.New("env").Parse(jsCookieEnvJS))
 	jsCookieTemplates = template.Must(jsCookieTemplates.New("src").Parse(`
-"use strict";
 {{- template "env" . }}
 
 {{ .Code }};
 
+window.dispatchEvent({ type: 'load' });
 document.getElementsByTagName('head')[0].children[0].src;
 `))
 
 	jsCookieTemplates = template.Must(jsCookieTemplates.New("TODO").Parse(`
-"use strict";
 {{- template "env" . }}
 
 {{ .Script1 }};
+window.dispatchEvent({ type: 'unload' });
+window.dispatchEvent({ type: 'load' });
 {{ .Script2 }};
 
-window.onload();
+window.dispatchEvent({ type: 'load' });
 [document.head, document, window];
 `))
 
