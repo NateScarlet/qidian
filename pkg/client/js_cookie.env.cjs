@@ -220,6 +220,275 @@ const { window, document } = (function () {
     "top",
   ];
 
+  const documentPossibleProps = [
+    "location",
+    "getElementsByTagName",
+    "getElementsByTagNameNS",
+    "getElementsByClassName",
+    "getElementById",
+    "createElement",
+    "createElementNS",
+    "createDocumentFragment",
+    "createTextNode",
+    "createComment",
+    "createProcessingInstruction",
+    "importNode",
+    "adoptNode",
+    "createEvent",
+    "createRange",
+    "createNodeIterator",
+    "createTreeWalker",
+    "createCDATASection",
+    "createAttribute",
+    "createAttributeNS",
+    "getElementsByName",
+    "open",
+    "close",
+    "write",
+    "writeln",
+    "hasFocus",
+    "execCommand",
+    "queryCommandEnabled",
+    "queryCommandIndeterm",
+    "queryCommandState",
+    "queryCommandSupported",
+    "queryCommandValue",
+    "releaseCapture",
+    "mozSetImageElement",
+    "clear",
+    "captureEvents",
+    "releaseEvents",
+    "exitFullscreen",
+    "mozCancelFullScreen",
+    "exitPointerLock",
+    "enableStyleSheetsForSet",
+    "caretPositionFromPoint",
+    "querySelector",
+    "querySelectorAll",
+    "getSelection",
+    "hasStorageAccess",
+    "requestStorageAccess",
+    "elementFromPoint",
+    "elementsFromPoint",
+    "getAnimations",
+    "prepend",
+    "append",
+    "replaceChildren",
+    "createExpression",
+    "createNSResolver",
+    "evaluate",
+    "implementation",
+    "URL",
+    "documentURI",
+    "compatMode",
+    "characterSet",
+    "charset",
+    "inputEncoding",
+    "contentType",
+    "doctype",
+    "documentElement",
+    "domain",
+    "referrer",
+    "cookie",
+    "lastModified",
+    "readyState",
+    "title",
+    "dir",
+    "body",
+    "head",
+    "images",
+    "embeds",
+    "plugins",
+    "links",
+    "forms",
+    "scripts",
+    "defaultView",
+    "designMode",
+    "onreadystatechange",
+    "onbeforescriptexecute",
+    "onafterscriptexecute",
+    "currentScript",
+    "fgColor",
+    "linkColor",
+    "vlinkColor",
+    "alinkColor",
+    "bgColor",
+    "anchors",
+    "applets",
+    "all",
+    "fullscreen",
+    "mozFullScreen",
+    "fullscreenEnabled",
+    "mozFullScreenEnabled",
+    "onfullscreenchange",
+    "onfullscreenerror",
+    "onpointerlockchange",
+    "onpointerlockerror",
+    "hidden",
+    "visibilityState",
+    "onvisibilitychange",
+    "selectedStyleSheetSet",
+    "lastStyleSheetSet",
+    "preferredStyleSheetSet",
+    "styleSheetSets",
+    "scrollingElement",
+    "timeline",
+    "rootElement",
+    "oncopy",
+    "oncut",
+    "onpaste",
+    "activeElement",
+    "styleSheets",
+    "pointerLockElement",
+    "fullscreenElement",
+    "mozFullScreenElement",
+    "adoptedStyleSheets",
+    "fonts",
+    "onabort",
+    "onblur",
+    "onfocus",
+    "onauxclick",
+    "onbeforeinput",
+    "oncanplay",
+    "oncanplaythrough",
+    "onchange",
+    "onclick",
+    "onclose",
+    "oncontextmenu",
+    "oncuechange",
+    "ondblclick",
+    "ondrag",
+    "ondragend",
+    "ondragenter",
+    "ondragexit",
+    "ondragleave",
+    "ondragover",
+    "ondragstart",
+    "ondrop",
+    "ondurationchange",
+    "onemptied",
+    "onended",
+    "onformdata",
+    "oninput",
+    "oninvalid",
+    "onkeydown",
+    "onkeypress",
+    "onkeyup",
+    "onload",
+    "onloadeddata",
+    "onloadedmetadata",
+    "onloadend",
+    "onloadstart",
+    "onmousedown",
+    "onmouseenter",
+    "onmouseleave",
+    "onmousemove",
+    "onmouseout",
+    "onmouseover",
+    "onmouseup",
+    "onwheel",
+    "onpause",
+    "onplay",
+    "onplaying",
+    "onprogress",
+    "onratechange",
+    "onreset",
+    "onresize",
+    "onscroll",
+    "onsecuritypolicyviolation",
+    "onseeked",
+    "onseeking",
+    "onselect",
+    "onslotchange",
+    "onstalled",
+    "onsubmit",
+    "onsuspend",
+    "ontimeupdate",
+    "onvolumechange",
+    "onwaiting",
+    "onselectstart",
+    "onselectionchange",
+    "ontoggle",
+    "onpointercancel",
+    "onpointerdown",
+    "onpointerup",
+    "onpointermove",
+    "onpointerout",
+    "onpointerover",
+    "onpointerenter",
+    "onpointerleave",
+    "ongotpointercapture",
+    "onlostpointercapture",
+    "onmozfullscreenchange",
+    "onmozfullscreenerror",
+    "onanimationcancel",
+    "onanimationend",
+    "onanimationiteration",
+    "onanimationstart",
+    "ontransitioncancel",
+    "ontransitionend",
+    "ontransitionrun",
+    "ontransitionstart",
+    "onwebkitanimationend",
+    "onwebkitanimationiteration",
+    "onwebkitanimationstart",
+    "onwebkittransitionend",
+    "onerror",
+    "children",
+    "firstElementChild",
+    "lastElementChild",
+    "childElementCount",
+    "getRootNode",
+    "hasChildNodes",
+    "insertBefore",
+    "appendChild",
+    "replaceChild",
+    "removeChild",
+    "normalize",
+    "cloneNode",
+    "isSameNode",
+    "isEqualNode",
+    "compareDocumentPosition",
+    "contains",
+    "lookupPrefix",
+    "lookupNamespaceURI",
+    "isDefaultNamespace",
+    "nodeType",
+    "nodeName",
+    "baseURI",
+    "isConnected",
+    "ownerDocument",
+    "parentNode",
+    "parentElement",
+    "childNodes",
+    "firstChild",
+    "lastChild",
+    "previousSibling",
+    "nextSibling",
+    "nodeValue",
+    "textContent",
+    "ELEMENT_NODE",
+    "ATTRIBUTE_NODE",
+    "TEXT_NODE",
+    "CDATA_SECTION_NODE",
+    "ENTITY_REFERENCE_NODE",
+    "ENTITY_NODE",
+    "PROCESSING_INSTRUCTION_NODE",
+    "COMMENT_NODE",
+    "DOCUMENT_NODE",
+    "DOCUMENT_TYPE_NODE",
+    "DOCUMENT_FRAGMENT_NODE",
+    "NOTATION_NODE",
+    "DOCUMENT_POSITION_DISCONNECTED",
+    "DOCUMENT_POSITION_PRECEDING",
+    "DOCUMENT_POSITION_FOLLOWING",
+    "DOCUMENT_POSITION_CONTAINS",
+    "DOCUMENT_POSITION_CONTAINED_BY",
+    "DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC",
+    "addEventListener",
+    "removeEventListener",
+    "dispatchEvent",
+  ];
   /**
    *
    * @template { {} } T
@@ -282,46 +551,131 @@ const { window, document } = (function () {
       throw ["div.getElementsByTagName", ...arguments, this];
     },
   });
-  const document = proxyGet({
-    head: proxyGet({
-      /**
-       * @type {unknown[]}
-       */
-      children: [],
-      /**
-       *
-       * @param {unknown} el
-       */
-      appendChild(el) {
-        this.children.push(el);
+  const document = proxyGet(
+    {
+      head: proxyGet({
+        /**
+         * @type {unknown[]}
+         */
+        children: [],
+        /**
+         *
+         * @param {unknown} el
+         */
+        appendChild(el) {
+          this.children.push(el);
+        },
+        removeChild(el) {
+          if (el.id === "_rspj") {
+            return;
+          }
+          throw ["head.removeChild", ...arguments, this.children];
+        },
+      }),
+      createElement(tag) {
+        if (tag === "script") {
+          return proxyGet({
+            tagName: "SCRIPT",
+            readyState: undefined,
+          });
+        }
+        if (tag === "div") {
+          return div;
+        }
+        throw ["document.createElement", ...arguments];
       },
-    }),
-    createElement(tag) {
-      if (tag === "script") {
-        return proxyGet({
-          readyState: undefined,
-        });
-      }
-      if (tag === "div") {
-        return div;
-      }
-      throw ["document.createElement", ...arguments];
+      getElementsByTagName(name) {
+        if (name === "head") {
+          return proxyGet([this.head]);
+        }
+        if (name === "base") {
+          return [];
+        }
+        if (name === "script") {
+          return proxyGet([
+            proxyGet({
+              id: "_rspj",
+              getAttribute(name) {
+                if (name === "r") {
+                  return "m";
+                }
+                throw ["script.0.getAttribute", ...arguments];
+              },
+              get parentElement() {
+                return document.head;
+              },
+            }),
+          ]);
+        }
+        throw new Error("document.getElementsByTagName(" + name + ")");
+      },
+      characterSet: "UTF-8",
+      getElementById(id) {
+        if (id === "__anchor__") {
+          return proxyGet({
+            id,
+            addEventListener(name) {
+              if (name === "dblclick") {
+                return;
+              }
+              throw arguments;
+            },
+          });
+        }
+        if (id === "__onload__") {
+          return proxyGet({
+            id,
+            name: "ehYvWYh7dIVSRWtku20i.7x35mAh2xs8SGcig01aqZs77n5XB8e2L4paz7CyFe1DAu4NdWvxkftV1LDB5jVm4pxGBxW316q3EyPkoTy8Pck8D.Dy1xQHiKtULpFosDPx",
+            value: "JopNCuCwfWnOpKIJVKbFPa",
+          });
+        }
+        if (id == "root-hammerhead-shadow-ui") {
+          return null;
+        }
+        throw ["getElementById", ...arguments, this];
+      },
+      addEventListener(name, cb) {
+        if (name.startsWith("mouse")) {
+          return;
+        }
+        if (name.startsWith("key")) {
+          return;
+        }
+        if (name.startsWith("touch")) {
+          return;
+        }
+        if (name === "input") {
+          return;
+        }
+        if (name === "click") {
+          return;
+        }
+        if (name === "scroll") {
+          return;
+        }
+        if (name === "mousemove") {
+          // cb();
+          return;
+        }
+        if (name === "driver-evaluate") {
+          return;
+        }
+        if (name === "webdriver-evaluate") {
+          return;
+        }
+        if (name === "selenium-evaluate") {
+          return;
+        }
+        if (name === "error") {
+          return;
+        }
+        throw ["document.addEventListener", ...arguments];
+      },
     },
-    getElementsByTagName(name) {
-      if (name === "head") {
-        return proxyGet([this.head]);
-      }
-      throw new Error("document.getElementsByTagName(" + name + ")");
-    },
-    characterSet: "UTF-8",
-    getElementById(id) {
-      if (id === "__anchor__") {
-        return proxyGet({});
-      }
-      throw ["getElementById", ...arguments, this];
-    },
-  });
+    documentPossibleProps
+  );
   const onload = [() => {}];
+  const preventAddEventListener = new Set("");
   const onunload = [() => {}];
   const window = proxySet(
     new Proxy(
@@ -343,8 +697,17 @@ const { window, document } = (function () {
           location: proxyGet({
             protocol: "{{.URL.Scheme}}:",
             host: "{{.URL.Host}}",
+            hostname: "{{.URL.Host}}",
             href: "{{.URL.String}}",
+            pathname: "{{.URL.Path}}",
             port: "",
+            search: "",
+            replace(url) {
+              if (this.pathname === url) {
+                return;
+              }
+              throw ["location.replace", ...arguments, this];
+            },
           }),
           setTimeout(cb, d) {
             if (d === 0) {
@@ -353,7 +716,11 @@ const { window, document } = (function () {
             }
             throw ["setTimeout", ...arguments];
           },
-          setInterval() {
+          setInterval(cb, d) {
+            if (d === 2047 || d == 50e3 || d === 2000 || d == 1500) {
+              return;
+            }
+
             throw ["setInterval", ...arguments];
           },
           XMLHttpRequest() {
@@ -361,16 +728,25 @@ const { window, document } = (function () {
           },
           onload: () => {},
           onunload: () => {},
+          onbeforeunload: () => {},
           addEventListener(name, cb) {
+            if (preventAddEventListener.has(name)) {
+              throw arguments;
+            }
             if (name === "load") {
               onload.push(cb);
+              // preventAddEventListener.add(name);
               return;
             }
             if (name === "unload") {
               onunload.push(cb);
+              preventAddEventListener.add(name);
               return;
             }
-            throw arguments;
+            if (name === "error") {
+              return;
+            }
+            throw ["window.addEventListener", ...arguments];
           },
           /**
            *
@@ -379,12 +755,16 @@ const { window, document } = (function () {
           dispatchEvent(e) {
             if (e.type === "load") {
               this.onload();
+              this.onload = () => {};
               onload.forEach((i) => i());
+              onload.length = 0;
               return;
             }
             if (e.type === "unload") {
               this.onunload();
+              this.onunload = () => {};
               onunload.forEach((i) => i());
+              onunload.length = 0;
               return;
             }
             throw arguments;
@@ -393,6 +773,11 @@ const { window, document } = (function () {
           "2eab37c0ead4b0b0": undefined,
           $b_onBridgeReady: undefined,
           $b_setup: undefined,
+          navigator: {
+            userAgent:
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
+            language: "zh-CN",
+          },
         },
 
         windowPossibleProps
@@ -402,6 +787,14 @@ const { window, document } = (function () {
           obj[prop] = value;
           globalThis[prop] = value;
           return true;
+        },
+        get(obj, prop) {
+          if (prop in obj) {
+            return obj[prop];
+          }
+          if (prop in globalThis) {
+            return globalThis[prop];
+          }
         },
       }
     )

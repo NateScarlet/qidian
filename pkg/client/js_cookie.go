@@ -35,12 +35,11 @@ document.getElementsByTagName('head')[0].children[0].src;
 {{- template "env" . }}
 
 {{ .Script1 }};
-window.dispatchEvent({ type: 'unload' });
 window.dispatchEvent({ type: 'load' });
 {{ .Script2 }};
 
-window.dispatchEvent({ type: 'load' });
-[document.head, document, window];
+// window.dispatchEvent({ type: 'load' });
+document.cookie;
 `))
 
 	jsCookieTemplates = template.Must(jsCookieTemplates.New("TODO2").Parse(`

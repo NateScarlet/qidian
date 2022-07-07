@@ -43,9 +43,9 @@ func TestJSCookieTODO(t *testing.T) {
 	script2, err := ioutil.ReadFile("53f27290_v1.local.js")
 	require.NoError(t, err)
 
-	url, err := jsCookieTODO(ctx, "https://book.qidian.com/info/1004608738/", script1, string(script2))
+	cookie, err := jsCookieTODO(ctx, "https://book.qidian.com/info/1004608738/", script1, string(script2))
 	require.NoError(t, err)
-	assert.Equal(t, "https://book.qidian.com/b3c79ec/f890b6f5917/53f27290.js", url)
+	assert.Equal(t, "Cc2838679FT=637r_mbhoxLVqqqDrBeuv6GSwOE3JJrUxnpmSQijotp0e6RrRDwrrX72PompklXYQ0gWXAVUKLZU2DjBRFH3cl26JzdrfbRouCsrbv.M7rfEGPZJ769dPXxDiWVGU9_dKIpwxVOxtKrin1TpyX_MAwVMnzfo5lZF5XjmQuqHg_Qma; path=/; expires=Thu, 14 Jul 2022 18:31:33 GMT", cookie)
 }
 
 // func TestJSCookieTODO2(t *testing.T) {
