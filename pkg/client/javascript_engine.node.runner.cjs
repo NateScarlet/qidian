@@ -1,5 +1,6 @@
 // @ts-check
 /// <reference no-default-lib="true" />
+/// <reference lib="ES2016" />
 /// <reference types="./javascript_engine.node.env"/>
 
 const vm = require("vm");

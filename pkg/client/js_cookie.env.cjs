@@ -1,6 +1,6 @@
 // @ts-check
 /// <reference no-default-lib="true" />
-/// <reference types="./js_cookie.env"/>
+/// <reference lib="ES2016" />
 
 const { window, document } = (function () {
   const windowPossibleProps = [
@@ -594,7 +594,7 @@ const { window, document } = (function () {
         if (name === "script") {
           const attrs = (() => {
             /**{{"/"}}return {{ .Script1Attrs | toJSON }};/**/
-            return {}
+            return {};
           })();
           return proxyGet([
             proxyGet({
