@@ -34,7 +34,7 @@ type Book struct {
 	LastUpdated  time.Time
 	Finished     time.Time
 	WordCount    uint64
-	// only avaliable when search by bookmark
+	// only available when search by bookmark
 	BookmarkCount       uint64
 	MonthTicketCount    uint64
 	WeekRecommendCount  uint64
@@ -63,11 +63,11 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		}
 	}()
 
-	htmlRes, err := client.GetHTML(ctx, url)
+	getHTML, err := client.GetHTML(ctx, url)
 	if err != nil {
 		return
 	}
-	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(htmlRes.Body()))
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(getHTML.Body()))
 	if err != nil {
 		return
 	}

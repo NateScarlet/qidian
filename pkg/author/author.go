@@ -1,9 +1,9 @@
 package author
 
 import (
+	"bytes"
 	"context"
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/NateScarlet/qidian/pkg/client"
@@ -33,16 +33,11 @@ func (a *Author) Fetch(ctx context.Context) (err error) {
 		return errors.New("qidian: empty author id")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", a.URL(), nil)
+	getHTML, err := client.GetHTML(ctx, a.URL())
 	if err != nil {
 		return
 	}
-	resp, err := client.For(ctx).Do(req)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(getHTML.Body()))
 	if err != nil {
 		return
 	}

@@ -1,6 +1,7 @@
 package book
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -213,8 +214,8 @@ func CategorySearchOptionTag(v string) CategorySearchOption {
 }
 
 type CategorySearchResult struct {
-	Response *http.Response
-	Site     string
+	getHTMLResult
+	site string
 }
 
 // CategorySearch use https://www.qidian.com/all page
@@ -224,29 +225,31 @@ func CategorySearch(ctx context.Context, opts ...CategorySearchOption) (ret Cate
 	for _, i := range opts {
 		i(opt)
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	ret.site = opt.site
+	ret.getHTMLResult, err = client.GetHTML(ctx, u.String(), client.GetHTMLOptionVisitRequest(func(req *http.Request) {
+		req.AddCookie(&http.Cookie{
+			Name:  "listStyle",
+			Value: "2",
+		})
+	}))
 	if err != nil {
 		return
 	}
-	req.AddCookie(&http.Cookie{
-		Name:  "listStyle",
-		Value: "2",
-	})
-	ret.Site = opt.site
-	ret.Response, err = client.For(ctx).Do(req)
 	return
 }
 
 func (r CategorySearchResult) Books() (ret []Book, err error) {
-	var res = r.Response
-	defer res.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(r.Body()))
 	if err != nil {
 		return
 	}
 	table := doc.Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: can not found result table: %s", r.Response.Request.URL)
+		return nil, fmt.Errorf("qidian: can not found result table: %s", r.Request().URL)
 	}
-	return parseTable(table, nil, r.Site)
+	return parseTable(table, nil, r.site)
+}
+
+func (obj CategorySearchResult) Site() string {
+	return obj.site
 }

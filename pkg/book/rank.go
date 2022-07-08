@@ -1,6 +1,7 @@
 package book
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -268,36 +269,39 @@ func RankURL(rt RankType, opts ...RankOption) (ret url.URL) {
 	return
 }
 
+type getHTMLResult = client.GetHTMLResult
 type RankResult struct {
-	Response *http.Response
-	RankType RankType
+	getHTMLResult
+	rankType RankType
 }
 
 func (r RankResult) Books() ([]Book, error) {
-	var resp = r.Response
-	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(r.Body()))
 	if err != nil {
 		return nil, err
 	}
 	table := doc.Find("table.rank-table-list")
 	if table.Length() == 0 {
-		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", resp.Request.URL)
+		return nil, fmt.Errorf("qidian: rank: can not found result table: %s", r.Request().URL)
 	}
-	return parseTable(table, r.RankType.ColumnParser, r.RankType.Site)
+	return parseTable(table, r.RankType().ColumnParser, r.RankType().Site)
 }
 
 func Rank(ctx context.Context, rt RankType, opts ...RankOption) (ret RankResult, err error) {
-	ret.RankType = rt
+	ret.rankType = rt
 	u := RankURL(rt, opts...)
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	ret.getHTMLResult, err = client.GetHTML(ctx, u.String(), client.GetHTMLOptionVisitRequest(func(req *http.Request) {
+		req.AddCookie(&http.Cookie{
+			Name:  "listStyle",
+			Value: "2",
+		})
+	}))
 	if err != nil {
 		return
 	}
-	req.AddCookie(&http.Cookie{
-		Name:  "listStyle",
-		Value: "2",
-	})
-	ret.Response, err = client.For(ctx).Do(req)
 	return
+}
+
+func (obj RankResult) RankType() RankType {
+	return obj.rankType
 }
