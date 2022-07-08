@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/NateScarlet/auto-derby/compare/v0.2.6...v0.3.0) (2022-07-08)
+
+### ⚠ BREAKING CHANGES
+
+- unexport all result fields
+
+### Features
+
+- allow change user agent ([321d42c](https://github.com/NateScarlet/auto-derby/commit/321d42c2f39d4fea66429045e4fd853a0ac8f014))
+
+### Bug Fixes
+
+- **book:** handle js cookie ([7a09f46](https://github.com/NateScarlet/auto-derby/commit/7a09f4618b97011843a759f766c8e175baabd4e1))
+- **deps:** update github.com/golang/groupcache digest to 41bb18b ([95fcf35](https://github.com/NateScarlet/auto-derby/commit/95fcf3555f04e4548dbf5367c579420eba0fd6b5))
+- **deps:** update golang.org/x/image digest to 41969df ([6c9f853](https://github.com/NateScarlet/auto-derby/commit/6c9f8536e266f5c404a66a37a434ef75a3d95ea1))
+- **deps:** update golang.org/x/net digest to c90051b ([05ba62e](https://github.com/NateScarlet/auto-derby/commit/05ba62ed94e439def82e016a82576adbe7f47f16))
+- **deps:** update module github.com/stretchr/testify to v1.7.2 ([8de62df](https://github.com/NateScarlet/auto-derby/commit/8de62dfd87369688bfd1785d37311c94b53758b7))
+- **deps:** update module github.com/stretchr/testify to v1.7.3 ([90ee7d7](https://github.com/NateScarlet/auto-derby/commit/90ee7d71b87f7d08f8857d57c6221a355b45fa5f))
+- **deps:** update module github.com/stretchr/testify to v1.7.4 ([5132ceb](https://github.com/NateScarlet/auto-derby/commit/5132ceb596347f4e9bc78c978cec9b5348833dc4))
+- **deps:** update module github.com/stretchr/testify to v1.8.0 ([0866c4d](https://github.com/NateScarlet/auto-derby/commit/0866c4d59bb024b82596c62e6a24741f79148998))
+
 ## [0.2.6](https://github.com/NateScarlet/qidian/compare/v0.2.5...v0.2.6) (2022-04-12)
 
 ### Bug Fixes
