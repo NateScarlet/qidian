@@ -3,6 +3,10 @@
 /// <reference lib="ES2016" />
 
 const { window, document } = (function () {
+  const __DEBUG__ = (() => {
+    /**{{"/"}}return {{__DEBUG__ | toJSON}};/**/
+    return false;
+  })();
   const windowPossibleProps = [
     "close",
     "stop",
@@ -522,8 +526,11 @@ const { window, document } = (function () {
    * @param {string[]=} possibleProps
    * @returns {T}
    */
-  const proxySet = (obj, possibleProps) =>
-    new Proxy(obj, {
+  const proxySet = (obj, possibleProps) => {
+    if (!__DEBUG__) {
+      return obj;
+    }
+    return new Proxy(obj, {
       set(obj, prop, value) {
         if (prop in obj) {
           obj[prop] = value;
@@ -537,11 +544,13 @@ const { window, document } = (function () {
           obj[prop] = value;
           return true;
         }
+
         throw new Error(
           `unexpected set obj(${Object.keys(obj)}).${String(prop)} = ${value}`
         );
       },
     });
+  };
 
   const div = proxyGet({
     getElementsByTagName(name) {

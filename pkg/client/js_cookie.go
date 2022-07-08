@@ -35,6 +35,9 @@ var jsCookieTemplates = template.New("").Funcs(template.FuncMap{
 		}
 		return string(data), nil
 	},
+	"__DEBUG__": func() bool {
+		return isDebug
+	},
 })
 
 func init() {
