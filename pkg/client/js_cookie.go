@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/json"
+	"fmt"
 	"net/url"
 	"text/template"
 
@@ -13,9 +15,22 @@ import (
 //go:embed js_cookie.env.cjs
 var jsCookieEnvJS string
 
+type jsCookieTemplateData struct {
+	URL              *url.URL
+	Script1          string
+	Script1Attrs     map[string]string
+	Script2          string
+	HiddenInputName  string
+	HiddenInputValue string
+}
+
 var jsCookieTemplates = template.New("").Funcs(template.FuncMap{
-	"backtickQuote": func(s string) string {
-		return "`" + s + "`"
+	"toJSON": func(s any) (_ string, err error) {
+		data, err := json.Marshal(s)
+		if err != nil {
+			return
+		}
+		return string(data), nil
 	},
 })
 
@@ -25,46 +40,61 @@ func init() {
 	jsCookieTemplates = template.Must(jsCookieTemplates.New("src").Parse(`
 {{- template "env" . }}
 
-{{ .Code }};
+{{ .Script1 }};
 
-window.dispatchEvent({ type: 'load' });
 document.getElementsByTagName('head')[0].children[0].src;
 `))
 
-	jsCookieTemplates = template.Must(jsCookieTemplates.New("TODO").Parse(`
+	jsCookieTemplates = template.Must(jsCookieTemplates.New("value").Parse(`
 {{- template "env" . }}
 
 {{ .Script1 }};
-window.dispatchEvent({ type: 'load' });
 {{ .Script2 }};
 
-// window.dispatchEvent({ type: 'load' });
 document.cookie;
-`))
-
-	jsCookieTemplates = template.Must(jsCookieTemplates.New("TODO2").Parse(`
-{{- template "env" . }}
-
-[document, window];
 `))
 }
 
-func jsCookieSrc(ctx context.Context, rawURL string, doc goquery.Document) (script, src string, err error) {
+func newJSCookieTemplateData(rawURL string, doc goquery.Document) (data *jsCookieTemplateData, err error) {
+	// spell-checker: word _rspj
+	data = new(jsCookieTemplateData)
 	var scriptEl = doc.Find("script#_rspj")
 	if scriptEl.Length() == 0 {
 		return
 	}
-	script = scriptEl.Text()
-	var jsEngine = ContextJavaScriptEngine(ctx)
-	var b bytes.Buffer
-	u, err := url.Parse(rawURL)
+	data.URL, err = url.Parse(rawURL)
 	if err != nil {
 		return
 	}
-	err = jsCookieTemplates.Lookup("src").Execute(&b, struct {
-		URL  *url.URL
-		Code string
-	}{u, script})
+	data.Script1 = scriptEl.Text()
+	data.Script1Attrs = make(map[string]string, len(scriptEl.Nodes[0].Attr))
+	for _, i := range scriptEl.Nodes[0].Attr {
+		data.Script1Attrs[i.Key] = i.Val
+	}
+
+	var hiddenInput = doc.Find("#__onload__")
+	if hiddenInput.Length() == 0 {
+		err = fmt.Errorf("missing '#__onload__' element")
+		return
+	}
+	var ok bool
+	data.HiddenInputName, ok = hiddenInput.Attr("name")
+	if !ok {
+		err = fmt.Errorf("missing '#__onload__' name attr")
+		return
+	}
+	data.HiddenInputValue, ok = hiddenInput.Attr("value")
+	if !ok {
+		err = fmt.Errorf("missing '#__onload__' value attr")
+		return
+	}
+	return
+}
+
+func jsCookieSrc(ctx context.Context, data jsCookieTemplateData) (src string, err error) {
+	var jsEngine = ContextJavaScriptEngine(ctx)
+	var b bytes.Buffer
+	err = jsCookieTemplates.Lookup("src").Execute(&b, data)
 	if err != nil {
 		return
 	}
@@ -72,39 +102,16 @@ func jsCookieSrc(ctx context.Context, rawURL string, doc goquery.Document) (scri
 	return
 }
 
-func jsCookieTODO(ctx context.Context, rawURL string, script1, script2 string) (script3 string, err error) {
+func jsCookieValue(ctx context.Context, data jsCookieTemplateData) (cookie string, err error) {
 	var jsEngine = ContextJavaScriptEngine(ctx)
 	var b bytes.Buffer
-	u, err := url.Parse(rawURL)
-	if err != nil {
-		return
-	}
-	err = jsCookieTemplates.Lookup("TODO").Execute(&b, struct {
-		URL     *url.URL
-		Script1 string
-		Script2 string
-	}{u, script1, script2})
+	err = jsCookieTemplates.Lookup("value").Execute(&b, data)
 	if err != nil {
 		return
 	}
 	return jsEngine.Run(ctx, b.String())
 }
 
-func jsCookieTODO2(ctx context.Context, rawURL string, script1, script2, script3 string) (_ string, err error) {
-	var jsEngine = ContextJavaScriptEngine(ctx)
-	var b bytes.Buffer
-	u, err := url.Parse(rawURL)
-	if err != nil {
-		return
-	}
-	err = jsCookieTemplates.Lookup("TODO2").Execute(&b, struct {
-		URL     *url.URL
-		Script1 string
-		Script2 string
-		Script3 string
-	}{u, script1, script2, script3})
-	if err != nil {
-		return
-	}
-	return jsEngine.Run(ctx, b.String())
+func jsCookie(ctx context.Context, rawURL string, script1 string) (_ string, err error) {
+	panic("TODO")
 }

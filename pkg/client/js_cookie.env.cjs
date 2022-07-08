@@ -592,12 +592,16 @@ const { window, document } = (function () {
           return [];
         }
         if (name === "script") {
+          const attrs = (() => {
+            /**{{"/"}}return {{ .Script1Attrs | toJSON }};/**/
+            return {}
+          })();
           return proxyGet([
             proxyGet({
               id: "_rspj",
               getAttribute(name) {
-                if (name === "r") {
-                  return "m";
+                if (name in attrs) {
+                  return attrs[name];
                 }
                 throw ["script.0.getAttribute", ...arguments];
               },
@@ -625,8 +629,9 @@ const { window, document } = (function () {
         if (id === "__onload__") {
           return proxyGet({
             id,
-            name: "ehYvWYh7dIVSRWtku20i.7x35mAh2xs8SGcig01aqZs77n5XB8e2L4paz7CyFe1DAu4NdWvxkftV1LDB5jVm4pxGBxW316q3EyPkoTy8Pck8D.Dy1xQHiKtULpFosDPx",
-            value: "JopNCuCwfWnOpKIJVKbFPa",
+            hidden: true,
+            name: "{{ .HiddenInputName  }}",
+            value: "{{ .HiddenInputValue }}",
           });
         }
         if (id == "root-hammerhead-shadow-ui") {
