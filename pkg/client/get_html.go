@@ -30,11 +30,11 @@ func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 		err = fmt.Errorf("nil cookie jar")
 		return
 	}
-	cookies, err := jsCookie(ctx, *data)
+	cookie, err := jsCookie(ctx, *data)
 	if err != nil {
 		return
 	}
-	c.Jar.SetCookies(res.Request().URL, cookies)
+	c.Jar.SetCookies(res.Request().URL, []*http.Cookie{cookie})
 	resp, err := c.Do(res.Request())
 	if err != nil {
 		return

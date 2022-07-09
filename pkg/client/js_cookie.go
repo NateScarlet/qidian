@@ -119,7 +119,7 @@ func jsCookieValue(ctx context.Context, data jsCookieTemplateData) (cookie strin
 	return jsEngine.Run(ctx, b.String())
 }
 
-func jsCookie(ctx context.Context, data jsCookieTemplateData) (cookie []*http.Cookie, err error) {
+func jsCookie(ctx context.Context, data jsCookieTemplateData) (cookie *http.Cookie, err error) {
 	src, err := jsCookieSrc(ctx, data)
 	if err != nil {
 		return
@@ -138,6 +138,6 @@ func jsCookie(ctx context.Context, data jsCookieTemplateData) (cookie []*http.Co
 	if err != nil {
 		return
 	}
-	return parseCookies(value), nil
+	return parseSetCookie(value)
 
 }
