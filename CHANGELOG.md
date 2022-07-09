@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.2](https://github.com/NateScarlet/auto-derby/compare/v0.3.1...v0.3.2) (2022-07-09)
+
+### Bug Fixes
+
+- **client:** should avoid concurrent request due to js cookie ([3172557](https://github.com/NateScarlet/auto-derby/commit/3172557c3e9991d0ebc64fe4de3ef1e0c532018a))
+
 ## [0.3.1](https://github.com/NateScarlet/auto-derby/compare/v0.3.0...v0.3.1) (2022-07-09)
 
 ### Bug Fixes
