@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -80,7 +81,11 @@ func (obj GetHTMLResult) Body() []byte {
 	return obj.body
 }
 
+var getHTMLMu sync.Mutex
+
 func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
+	getHTMLMu.Lock()
+	defer getHTMLMu.Unlock()
 	var opts = newGetHTMLOptions(options...)
 	req, err := newRequest(ctx, "GET", url, nil)
 	if err != nil {
