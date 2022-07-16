@@ -44,6 +44,10 @@ func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res Get
 	if err != nil {
 		return
 	}
+	err = handleAccessDeny(ctx, &res)
+	if err != nil {
+		return
+	}
 	return
 }
 
@@ -98,6 +102,20 @@ func handleCaptcha(ctx context.Context, res *GetHTMLResult) (err error) {
 	defer resp.Body.Close()
 	res.response = resp
 	res.body, err = io.ReadAll(resp.Body)
+	return
+}
+
+func handleAccessDeny(ctx context.Context, res *GetHTMLResult) (err error) {
+	if !bytes.Contains(res.Body(), []byte("<title>AccessDeny</title>")) {
+		return
+	}
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(res.Body()))
+	if err != nil {
+		return
+	}
+	if v := doc.Find("h1").Text(); v != "" {
+		return fmt.Errorf("access deny: %s", v)
+	}
 	return
 }
 
