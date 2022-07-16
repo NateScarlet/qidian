@@ -7,9 +7,45 @@ import (
 	"io"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var getHTMLMu sync.Mutex
+var CaptchaDelay = 1 * time.Minute
+
+func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
+	getHTMLMu.Lock()
+	defer getHTMLMu.Unlock()
+	var opts = newGetHTMLOptions(options...)
+	req, err := newRequest(ctx, "GET", url, nil)
+	if err != nil {
+		return
+	}
+	if opts.visitRequest != nil {
+		opts.visitRequest(req)
+	}
+	resp, err := For(ctx).Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	res.response = resp
+	res.body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	err = handleCaptcha(ctx, &res)
+	if err != nil {
+		return
+	}
+	err = handleJSProtect(ctx, &res)
+	if err != nil {
+		return
+	}
+	return
+}
 
 func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 	if !bytes.Contains(res.Body(), []byte("_rspj")) {
@@ -36,6 +72,25 @@ func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 		return
 	}
 	c.Jar.SetCookies(res.Request().URL, []*http.Cookie{cookie})
+	resp, err := c.Do(res.Request())
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	res.response = resp
+	res.body, err = io.ReadAll(resp.Body)
+	return
+}
+
+func handleCaptcha(ctx context.Context, res *GetHTMLResult) (err error) {
+	if !bytes.Contains(res.Body(), []byte("/TCaptcha.js\"")) {
+		return
+	}
+	if !bytes.Contains(res.Body(), []byte("<body></body>")) {
+		return
+	}
+	time.Sleep(CaptchaDelay)
+	var c = For(ctx)
 	resp, err := c.Do(res.Request())
 	if err != nil {
 		return
@@ -79,36 +134,6 @@ func (obj GetHTMLResult) Response() *http.Response {
 
 func (obj GetHTMLResult) Body() []byte {
 	return obj.body
-}
-
-var getHTMLMu sync.Mutex
-
-func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
-	getHTMLMu.Lock()
-	defer getHTMLMu.Unlock()
-	var opts = newGetHTMLOptions(options...)
-	req, err := newRequest(ctx, "GET", url, nil)
-	if err != nil {
-		return
-	}
-	if opts.visitRequest != nil {
-		opts.visitRequest(req)
-	}
-	resp, err := For(ctx).Do(req)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	res.response = resp
-	res.body, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-	err = handleJSProtect(ctx, &res)
-	if err != nil {
-		return
-	}
-	return
 }
 
 func GetHTMLOptionVisitRequest(visitor func(req *http.Request)) GetHTMLOption {
