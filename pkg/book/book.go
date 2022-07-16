@@ -52,17 +52,17 @@ var authorURLPattern = regexp.MustCompile(`//my\.qidian\.com/author/(\d+)/`)
 
 // Fetch book from info page.
 func (b *Book) Fetch(ctx context.Context) (err error) {
-	if b.ID == "" {
-		return errors.New("qidian: empty book id")
-	}
-
-	var url = b.URL()
 	defer func() {
 		if err != nil {
-			err = fmt.Errorf("url=%s: %w", url, err)
+			err = fmt.Errorf("qidian: (*Book{'%s'}).Fetch: %w", b.ID, err)
 		}
 	}()
 
+	if b.ID == "" {
+		return errors.New("empty book id")
+	}
+
+	var url = b.URL()
 	getHTML, err := client.GetHTML(ctx, url)
 	if err != nil {
 		return

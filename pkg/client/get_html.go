@@ -16,6 +16,12 @@ var getHTMLMu sync.Mutex
 var CaptchaDelay = 1 * time.Minute
 
 func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("qidian: client.GetHTML('%s'): %w", url, err)
+		}
+	}()
+
 	getHTMLMu.Lock()
 	defer getHTMLMu.Unlock()
 	var opts = newGetHTMLOptions(options...)
