@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.3](https://github.com/NateScarlet/qidian/compare/v0.3.2...v0.3.3) (2022-07-16)
+
+
+### Features
+
+* change error messsage ([896ec11](https://github.com/NateScarlet/qidian/commit/896ec117d3bd86bf758b95eb6a27b6894046b118))
+* **client:** delay on captcha ([8630f02](https://github.com/NateScarlet/qidian/commit/8630f0262c49a27a5c88a36bb45914f444c44340))
+* **client:** handle access deny ([c04245a](https://github.com/NateScarlet/qidian/commit/c04245a58caefe758596dac5b217314b030991b3))
+
+
+### Bug Fixes
+
+* **deps:** update golang.org/x/net digest to 1185a90 ([516574b](https://github.com/NateScarlet/qidian/commit/516574bd5c7c16bc558200e783b23c24d86cb013))
+
 ## [0.3.2](https://github.com/NateScarlet/auto-derby/compare/v0.3.1...v0.3.2) (2022-07-09)
 
 ### Bug Fixes
