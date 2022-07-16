@@ -120,8 +120,7 @@ func handleAccessDeny(ctx context.Context, res *GetHTMLResult) (err error) {
 }
 
 type GetHTMLOptions struct {
-	visitRequest  func(req *http.Request)
-	visitResponse func(resp *http.Response)
+	visitRequest func(req *http.Request)
 }
 
 func newGetHTMLOptions(options ...GetHTMLOption) *GetHTMLOptions {
