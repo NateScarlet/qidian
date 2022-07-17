@@ -124,6 +124,12 @@ func jsCookie(ctx context.Context, data jsCookieTemplateData) (cookie *http.Cook
 	if err != nil {
 		return
 	}
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("js cookie src '%s': %w", src, err)
+		}
+	}()
+
 	resp, err := For(ctx).Get(src)
 	if err != nil {
 		return
