@@ -591,6 +591,16 @@ const { window, document } = (function () {
         if (tag === "div") {
           return div;
         }
+        if (tag === "a") {
+          return proxyGet({
+            tagName: "A",
+          });
+        }
+        if (tag == "form") {
+          return proxyGet({
+            tagName: "FORM",
+          })
+        }
         throw ["document.createElement", ...arguments];
       },
       getElementsByTagName(name) {

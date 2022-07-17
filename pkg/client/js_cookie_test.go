@@ -50,3 +50,25 @@ func TestJSCookieValue(t *testing.T) {
 	require.NoError(t, err)
 	assert.Regexp(t, "^Cc2838679FT=.{173}; path=/; expires=.{29}$", cookie)
 }
+
+func TestJSCookieValue2022_07_17(t *testing.T) {
+	var ctx = context.Background()
+	var doc *goquery.Document
+	func() {
+		r, err := os.Open("js_cookie_sample.html")
+		require.NoError(t, err)
+		defer r.Close()
+		doc, err = goquery.NewDocumentFromReader(r)
+		require.NoError(t, err)
+	}()
+
+	data, err := newJSCookieTemplateData(ctx, "https://book.qidian.com/info/1004608738/", *doc)
+	require.NoError(t, err)
+	script2Data, err := ioutil.ReadFile("js_cookie_sample_2022-07-17.js")
+	require.NoError(t, err)
+	data.Script2 = string(script2Data)
+
+	cookie, err := jsCookieValue(ctx, *data)
+	require.NoError(t, err)
+	assert.Regexp(t, "^Cc2838679FT=.{173}; path=/; expires=.{29}$", cookie)
+}
