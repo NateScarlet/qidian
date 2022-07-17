@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.4](https://github.com/NateScarlet/qidian/compare/v0.3.3...v0.3.4) (2022-07-17)
+
+
+### Bug Fixes
+
+* **client:** handle js cookie change ([a5ab3a8](https://github.com/NateScarlet/qidian/commit/a5ab3a89742ca7950cc88412d3e423db23649cca))
+
 ## [0.3.3](https://github.com/NateScarlet/qidian/compare/v0.3.2...v0.3.3) (2022-07-16)
 
 
