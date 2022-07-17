@@ -66,7 +66,6 @@ func (e nodeJSEngine) Run(ctx context.Context, unsafeJS string) (output string, 
 	err = cmd.Run()
 	if err != nil {
 		if stderr.Len() > 0 {
-			print(stderr.String())
 			err = fmt.Errorf("%w: %s", err, stderr.String())
 		}
 		return
