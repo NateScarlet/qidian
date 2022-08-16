@@ -6,7 +6,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"text/template"
@@ -130,12 +129,7 @@ func jsCookie(ctx context.Context, data jsCookieTemplateData) (cookie *http.Cook
 		}
 	}()
 
-	resp, err := For(ctx).Get(src)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	script2Data, err := io.ReadAll(resp.Body)
+	script2Data, err := GetAsset(ctx, src)
 	if err != nil {
 		return
 	}

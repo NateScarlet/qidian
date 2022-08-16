@@ -42,6 +42,10 @@ func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res Get
 func makeGetHTMLResult(ctx context.Context, resp *http.Response) (res GetHTMLResult, err error) {
 	err = func() (err error) {
 		defer resp.Body.Close()
+		if resp.StatusCode >= 400 {
+			err = fmt.Errorf("response status %d", resp.StatusCode)
+			return
+		}
 		res.response = resp
 		res.body, err = io.ReadAll(resp.Body)
 		if err != nil {
@@ -105,7 +109,7 @@ func handleCaptcha(ctx context.Context, res *GetHTMLResult) (err error) {
 	if !bytes.Contains(res.Body(), []byte("/TCaptcha.js\"")) {
 		return
 	}
-	if !bytes.Contains(res.Body(), []byte("<body></body>")) {
+	if !bytes.Contains(res.Body(), []byte("<body></body>")) && !bytes.HasPrefix(res.Body(), []byte("<script>")) {
 		return
 	}
 	time.Sleep(CaptchaDelay)
