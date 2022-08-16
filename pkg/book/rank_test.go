@@ -153,10 +153,6 @@ func TestRank_Fetch(t *testing.T) {
 			rankType: RTTotalBookmarkVIP,
 		},
 		{
-			name:     "weekly-reward-vip",
-			rankType: RTWeeklyRewardVIP,
-		},
-		{
 			name:     "weekly-single-chapter-sales-mm",
 			rankType: RTWeeklySingleChapterSalesMM,
 		},

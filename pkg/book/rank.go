@@ -196,9 +196,6 @@ var (
 	RTTotalBookmarkVIP = RankType{
 		URL: httpsURL("/rank/vipcollect/"),
 	}
-	RTWeeklyRewardVIP = RankType{
-		URL: httpsURL("/rank/vipreward/"),
-	}
 	RTWeeklySingleChapterSalesMM = RankType{
 		URL:  httpsURL("/rank/mm/subscr/"),
 		Site: "mm",
