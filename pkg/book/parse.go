@@ -1,6 +1,7 @@
 package book
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -51,7 +52,7 @@ func deobfuscate(doc *goquery.Selection) (ret string, err error) {
 		return
 	}
 	var f *sfnt.Font
-	f, err = font.Get(match[1])
+	f, err = font.Get(context.TODO(), match[1])
 	if err != nil {
 		return
 	}
@@ -59,8 +60,7 @@ func deobfuscate(doc *goquery.Selection) (ret string, err error) {
 	return
 }
 
-// ParseSelectionCount that may obfuscated by font.
-func ParseSelectionCount(doc *goquery.Selection) (ret uint64, err error) {
+func parseSelectionCount(doc *goquery.Selection) (ret uint64, err error) {
 	var s string
 	s, err = deobfuscate(doc)
 	if err != nil {
@@ -190,20 +190,20 @@ func defaultColumnParser(book *Book, index int, th *goquery.Selection, s *goquer
 			book.Author.ID = href[23:]
 		}
 	case "字数":
-		book.WordCount, err = ParseSelectionCount(s)
+		book.WordCount, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}
 	case "收藏":
 		fallthrough
 	case "总收藏":
-		book.BookmarkCount, err = ParseSelectionCount(s)
+		book.BookmarkCount, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}
 	case "推荐":
 		var n uint64
-		n, err = ParseSelectionCount(s)
+		n, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}
@@ -213,17 +213,17 @@ func defaultColumnParser(book *Book, index int, th *goquery.Selection, s *goquer
 			book.WeekRecommendCount = n
 		}
 	case "周推荐":
-		book.WeekRecommendCount, err = ParseSelectionCount(s)
+		book.WeekRecommendCount, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}
 	case "月推荐":
-		book.MonthRecommendCount, err = ParseSelectionCount(s)
+		book.MonthRecommendCount, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}
 	case "总推荐":
-		book.TotalRecommendCount, err = ParseSelectionCount(s)
+		book.TotalRecommendCount, err = parseSelectionCount(s)
 		if err != nil {
 			return
 		}

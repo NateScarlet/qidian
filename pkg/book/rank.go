@@ -37,7 +37,7 @@ var (
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "":
-				book.MonthTicketCount, err = ParseSelectionCount(td)
+				book.MonthTicketCount, err = parseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
 			}
@@ -50,7 +50,7 @@ var (
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "月票榜", "起点月票榜":
-				book.MonthTicketCount, err = ParseSelectionCount(td)
+				book.MonthTicketCount, err = parseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
 			}
@@ -86,7 +86,7 @@ var (
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch column := strings.TrimSpace(th.Text()); column {
 			case "推荐":
-				book.WeekRecommendCount, err = ParseSelectionCount(td)
+				book.WeekRecommendCount, err = parseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
 			}
@@ -103,7 +103,7 @@ var (
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
-				book.MonthRecommendCount, err = ParseSelectionCount(td)
+				book.MonthRecommendCount, err = parseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
 			}
@@ -120,7 +120,7 @@ var (
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
-				book.TotalRecommendCount, err = ParseSelectionCount(td)
+				book.TotalRecommendCount, err = parseSelectionCount(td)
 			default:
 				err = DefaultColumnParser.ParseColumn(book, i, th, td)
 			}
