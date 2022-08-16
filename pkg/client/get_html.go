@@ -36,12 +36,23 @@ func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res Get
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
-	res.response = resp
-	res.body, err = io.ReadAll(resp.Body)
+	return makeGetHTMLResult(ctx, resp)
+}
+
+func makeGetHTMLResult(ctx context.Context, resp *http.Response) (res GetHTMLResult, err error) {
+	err = func() (err error) {
+		defer resp.Body.Close()
+		res.response = resp
+		res.body, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return
+		}
+		return
+	}()
 	if err != nil {
 		return
 	}
+
 	err = handleCaptcha(ctx, &res)
 	if err != nil {
 		return
@@ -86,9 +97,7 @@ func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
-	res.response = resp
-	res.body, err = io.ReadAll(resp.Body)
+	*res, err = makeGetHTMLResult(ctx, resp)
 	return
 }
 
@@ -105,9 +114,7 @@ func handleCaptcha(ctx context.Context, res *GetHTMLResult) (err error) {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
-	res.response = resp
-	res.body, err = io.ReadAll(resp.Body)
+	*res, err = makeGetHTMLResult(ctx, resp)
 	return
 }
 
