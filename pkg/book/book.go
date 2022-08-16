@@ -79,6 +79,25 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	}()
 	infoElem := doc.Find(".book-info").Clone()
 	stateElem := doc.Find(".book-state")
+	var ok bool
+
+	// Title
+	b.Title, ok = doc.Find("meta[property=\"og:novel:book_name\"]").First().Attr("content")
+	if !ok {
+		err = fmt.Errorf("'og:novel:book_name' meta tag not found")
+		return
+	}
+
+	// LastUpdated
+	lastUpdatedText, ok := doc.Find("meta[property=\"og:novel:update_time\"]").First().Attr("content")
+	if !ok {
+		err = fmt.Errorf("'og:novel:update_time' meta tag not found")
+		return
+	}
+	b.LastUpdated, err = ParseTime(lastUpdatedText)
+	if err != nil {
+		return err
+	}
 
 	// Author
 	writerElem := infoElem.Find("a.writer")
@@ -90,9 +109,6 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 			b.Author.ID = match[1]
 		}
 	}
-
-	// Title
-	b.Title = strings.TrimSpace(infoElem.Find("h1").Text())
 
 	// Categories
 	infoElem.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -107,7 +123,7 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 	})
 
 	// Cover
-	b.CoverURL = util.AbsoluteURL(doc.Find("#bookImg > img").AttrOr("src", ""))
+	b.CoverURL = util.AbsoluteURL(doc.Find("meta[property=\"og:image\"]").AttrOr("content", ""))
 
 	// Tags
 	tagElemList := infoElem.Find(".tag > span").
@@ -119,17 +135,16 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 
 	// Introduction
 	b.Summary = infoElem.Find(".intro").Text()
-	b.Introduction = nodesText(doc.Find(".book-info-detail .book-intro").Nodes)
+	b.Introduction, ok = doc.Find("meta[property=\"og:description\"]").First().Attr("content")
+	if !ok {
+		err = fmt.Errorf("'og:description' meta tag not found")
+		return
+	}
+	b.Introduction = strings.TrimSpace(b.Introduction)
 
 	// Count
-	infoElem.Find("style").EachWithBreak(func(i int, s *goquery.Selection) bool {
-		var parent = s.Parent()
-		var c string
-		c, err = deobfuscate(parent)
-		if err != nil {
-			return false
-		}
-		c += parent.Next().Text()
+	infoElem.Find(".intro + p > cite").EachWithBreak(func(i int, s *goquery.Selection) bool {
+		var c = s.Prev().AddSelection(s).Text()
 		if strings.HasSuffix(c, "字") {
 			b.WordCount, err = ParseCount(c[:len(c)-len("字")])
 			if err != nil {
@@ -148,12 +163,6 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		}
 		return true
 	})
-	if err != nil {
-		return err
-	}
-
-	// LastUpdated
-	b.LastUpdated, err = ParseTime(stateElem.Find(".update .time").First().Text())
 	if err != nil {
 		return err
 	}

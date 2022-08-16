@@ -113,6 +113,8 @@ func parseTimeAt(s string, t time.Time) (ret time.Time, err error) {
 			0,
 			t.Location(),
 		)
+	case len(s) == 19:
+		ret, err = time.ParseInLocation("2006-01-02 15:04:05", s, TZ)
 	default:
 		ret, err = time.ParseInLocation("2006-01-02 15:04", s, TZ)
 	}
