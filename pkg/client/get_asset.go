@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func GetAsset(ctx context.Context, url string) (body []byte, err error) {
@@ -13,7 +14,14 @@ func GetAsset(ctx context.Context, url string) (body []byte, err error) {
 			err = fmt.Errorf("GetAsset('%s'): %w", url, err)
 		}
 	}()
-
+	var cache = ContextAssetCache(ctx)
+	body, ok, err := cache.Get(ctx, url)
+	if err != nil {
+		return
+	}
+	if ok {
+		return
+	}
 	req, err := newRequest(ctx, "GET", url, nil)
 	if err != nil {
 		return
@@ -27,7 +35,15 @@ func GetAsset(ctx context.Context, url string) (body []byte, err error) {
 		err = fmt.Errorf("response status %d", resp.StatusCode)
 		return
 	}
+	if strings.HasSuffix(url, ".js") && !strings.HasPrefix(resp.Header.Get("Content-Type"), "application/javascript") {
+		err = fmt.Errorf("unexpected content type '%s'", resp.Header.Get("Content-Type"))
+		return
+	}
 	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	err = cache.Set(ctx, url, body)
 	if err != nil {
 		return
 	}
