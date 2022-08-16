@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/NateScarlet/qidian/compare/v0.3.4...v0.4.0) (2022-08-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **font:** replace font.Cache with client.AssetCache
+
+### Features
+
+* **client:** add asset cache ([6353ae9](https://github.com/NateScarlet/qidian/commit/6353ae9a7769459eab82144b99fc874a9eb35d11))
+* **font:** replace font.Cache with client.AssetCache ([4eb8c4e](https://github.com/NateScarlet/qidian/commit/4eb8c4ed42bc819e8ca83e97e71f2fc640d5ca47))
+
+
+### Bug Fixes
+
+* **book:** follow detail page change ([c0291a1](https://github.com/NateScarlet/qidian/commit/c0291a17c6b2e8ad6f10d86be15dc55e425b8a6a))
+* **book:** RTWeeklyRewardVIP has been removed ([8c1c1ce](https://github.com/NateScarlet/qidian/commit/8c1c1ce4953d24ba4c113da3cdcf2cb1ac255660))
+* **client:** should check response status code ([4aa8806](https://github.com/NateScarlet/qidian/commit/4aa88060e2733a1922bf3c70525d878f6550851c))
+* **client:** should handle js protect after captcha delay ([c01bd9b](https://github.com/NateScarlet/qidian/commit/c01bd9b58d8748ea11e8bf5d623496b71238e3e5))
+* **client:** should not print error ([3d3081e](https://github.com/NateScarlet/qidian/commit/3d3081ed07948cb880baa84050a6d254323a05ba))
+
 ## [0.3.4](https://github.com/NateScarlet/qidian/compare/v0.3.3...v0.3.4) (2022-07-17)
 
 
