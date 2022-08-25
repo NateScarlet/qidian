@@ -56,7 +56,10 @@ func makeGetHTMLResult(ctx context.Context, resp *http.Response) (res GetHTMLRes
 	if err != nil {
 		return
 	}
-
+	err = handleStatusForbidden(ctx, &res)
+	if err != nil {
+		return
+	}
 	err = handleCaptcha(ctx, &res)
 	if err != nil {
 		return
@@ -97,6 +100,20 @@ func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 		return
 	}
 	c.Jar.SetCookies(res.Request().URL, []*http.Cookie{cookie})
+	resp, err := c.Do(res.Request())
+	if err != nil {
+		return
+	}
+	*res, err = makeGetHTMLResult(ctx, resp)
+	return
+}
+
+func handleStatusForbidden(ctx context.Context, res *GetHTMLResult) (err error) {
+	if res.response.StatusCode != http.StatusForbidden {
+		return
+	}
+	time.Sleep(CaptchaDelay)
+	var c = For(ctx)
 	resp, err := c.Do(res.Request())
 	if err != nil {
 		return
