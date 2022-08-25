@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.2](https://github.com/NateScarlet/qidian/compare/v0.4.1...v0.4.2) (2022-08-25)
+
+
+### Features
+
+* **client:** handle status code 403 ([44b6c14](https://github.com/NateScarlet/qidian/commit/44b6c14677cf0952b169295b49c910bb349fc225))
+
 ## [0.4.1](https://github.com/NateScarlet/qidian/compare/v0.4.0...v0.4.1) (2022-08-25)
 
 
