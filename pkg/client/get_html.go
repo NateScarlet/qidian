@@ -42,13 +42,13 @@ func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res Get
 func makeGetHTMLResult(ctx context.Context, resp *http.Response) (res GetHTMLResult, err error) {
 	err = func() (err error) {
 		defer resp.Body.Close()
-		if resp.StatusCode >= 400 {
-			err = fmt.Errorf("response status %d", resp.StatusCode)
-			return
-		}
 		res.response = resp
 		res.body, err = io.ReadAll(resp.Body)
 		if err != nil {
+			return
+		}
+		if resp.StatusCode >= 400 {
+			err = fmt.Errorf("response status %d\n\n%s", resp.StatusCode, res.body)
 			return
 		}
 		return
