@@ -15,15 +15,7 @@ import (
 var getHTMLMu sync.Mutex
 var CaptchaDelay = 1 * time.Minute
 
-func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
-	defer func() {
-		if err != nil {
-			err = fmt.Errorf("qidian: client.GetHTML('%s'): %w", url, err)
-		}
-	}()
-
-	getHTMLMu.Lock()
-	defer getHTMLMu.Unlock()
+func rawGetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
 	var opts = newGetHTMLOptions(options...)
 	req, err := newRequest(ctx, "GET", url, nil)
 	if err != nil {
@@ -36,10 +28,26 @@ func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res Get
 	if err != nil {
 		return
 	}
-	return makeGetHTMLResult(ctx, resp)
+	return makeGetHTMLResult(ctx, resp, func() (_ GetHTMLResult, err error) {
+		return rawGetHTML(ctx, url, options...)
+	})
 }
 
-func makeGetHTMLResult(ctx context.Context, resp *http.Response) (res GetHTMLResult, err error) {
+func GetHTML(ctx context.Context, url string, options ...GetHTMLOption) (res GetHTMLResult, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("qidian: client.GetHTML('%s'): %w", url, err)
+		}
+	}()
+
+	getHTMLMu.Lock()
+	defer getHTMLMu.Unlock()
+
+	return rawGetHTML(ctx, url, options...)
+}
+
+func makeGetHTMLResult(ctx context.Context, resp *http.Response, retry func() (_ GetHTMLResult, err error)) (res GetHTMLResult, err error) {
+	res.retry = retry
 	err = func() (err error) {
 		defer resp.Body.Close()
 		res.response = resp
@@ -100,11 +108,7 @@ func handleJSProtect(ctx context.Context, res *GetHTMLResult) (err error) {
 		return
 	}
 	c.Jar.SetCookies(res.Request().URL, []*http.Cookie{cookie})
-	resp, err := c.Do(res.Request())
-	if err != nil {
-		return
-	}
-	*res, err = makeGetHTMLResult(ctx, resp)
+	*res, err = res.retry()
 	return
 }
 
@@ -113,12 +117,7 @@ func handleStatusForbidden(ctx context.Context, res *GetHTMLResult) (err error) 
 		return
 	}
 	time.Sleep(CaptchaDelay)
-	var c = For(ctx)
-	resp, err := c.Do(res.Request())
-	if err != nil {
-		return
-	}
-	*res, err = makeGetHTMLResult(ctx, resp)
+	*res, err = res.retry()
 	return
 }
 
@@ -130,12 +129,7 @@ func handleCaptcha(ctx context.Context, res *GetHTMLResult) (err error) {
 		return
 	}
 	time.Sleep(CaptchaDelay)
-	var c = For(ctx)
-	resp, err := c.Do(res.Request())
-	if err != nil {
-		return
-	}
-	*res, err = makeGetHTMLResult(ctx, resp)
+	*res, err = res.retry()
 	return
 }
 
@@ -170,6 +164,7 @@ type GetHTMLOption func(opts *GetHTMLOptions)
 type GetHTMLResult struct {
 	response *http.Response
 	body     []byte
+	retry    func() (_ GetHTMLResult, err error)
 }
 
 func (obj GetHTMLResult) Request() *http.Request {
