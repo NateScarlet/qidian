@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.1](https://github.com/NateScarlet/qidian/compare/v0.4.0...v0.4.1) (2022-08-25)
+
+
+### Features
+
+* **client:** include response body in error message ([05ee580](https://github.com/NateScarlet/qidian/commit/05ee5808d42e445578df6caf4095ea4b2ceb5e96))
+
 ## [0.4.0](https://github.com/NateScarlet/qidian/compare/v0.3.4...v0.4.0) (2022-08-16)
 
 
