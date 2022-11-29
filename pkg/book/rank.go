@@ -22,9 +22,16 @@ type RankType struct {
 	Site         string
 }
 
-func httpsURL(path string) (ret url.URL) {
+func mainSiteURL(path string) (ret url.URL) {
 	ret.Scheme = "https"
 	ret.Host = "www.qidian.com"
+	ret.Path = path
+	return
+}
+
+func mmSiteURL(path string) (ret url.URL) {
+	ret.Scheme = "https"
+	ret.Host = "www.qdmm.com"
 	ret.Path = path
 	return
 }
@@ -33,7 +40,7 @@ func httpsURL(path string) (ret url.URL) {
 var (
 	// support query by year and month after 2020-01.
 	RTMonthlyTicket = RankType{
-		URL: httpsURL("/rank/yuepiao/"),
+		URL: mainSiteURL("/rank/yuepiao/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "":
@@ -46,7 +53,7 @@ var (
 	}
 	// support query by year and month after 2020-01.
 	RTMonthlyTicketVIP = RankType{
-		URL: httpsURL("/rank/fengyun/"),
+		URL: mainSiteURL("/rank/fengyun/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "月票榜", "起点月票榜":
@@ -59,30 +66,30 @@ var (
 	}
 	// support query by year and month after 2020-01.
 	RTMonthlyTicketMM = RankType{
-		URL:          httpsURL("/rank/mm/yuepiao/"),
+		URL:          mmSiteURL("/rank/yuepiao/"),
 		ColumnParser: RTMonthlyTicketVIP.ColumnParser,
 		Site:         "mm",
 	}
 	RTNewBookSalesMM = RankType{
-		URL:  httpsURL("/rank/mm/newsales/"),
+		URL:  mmSiteURL("/rank/newsales/"),
 		Site: "mm",
 	}
 	RTDailySales = RankType{
-		URL: httpsURL("/rank/hotsales/"),
+		URL: mainSiteURL("/rank/hotsales/"),
 	}
 	RTDailySalesMM = RankType{
-		URL:  httpsURL("/rank/mm/hotsales/"),
+		URL:  mmSiteURL("/rank/hotsales/"),
 		Site: "mm",
 	}
 	RTWeeklyRead = RankType{
-		URL: httpsURL("/rank/readindex/"),
+		URL: mainSiteURL("/rank/readindex/"),
 	}
 	RTWeeklyReadMM = RankType{
-		URL:  httpsURL("/rank/mm/readindex/"),
+		URL:  mmSiteURL("/rank/readindex/"),
 		Site: "mm",
 	}
 	RTWeeklyRecommendation = RankType{
-		URL: httpsURL("/rank/recom/"),
+		URL: mainSiteURL("/rank/recom/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch column := strings.TrimSpace(th.Text()); column {
 			case "推荐":
@@ -94,12 +101,12 @@ var (
 		}),
 	}
 	RTWeeklyRecommendationMM = RankType{
-		URL:          httpsURL("/rank/mm/recom/"),
+		URL:          mmSiteURL("/rank/recom/"),
 		ColumnParser: RTWeeklyRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTMonthlyRecommendation = RankType{
-		URL: httpsURL("/rank/recom/datatype2/"),
+		URL: mainSiteURL("/rank/recom/datatype2/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
@@ -111,12 +118,12 @@ var (
 		}),
 	}
 	RTMonthlyRecommendationMM = RankType{
-		URL:          httpsURL("/rank/mm/recom/datatype2/"),
+		URL:          mmSiteURL("/rank/recom/datatype2/"),
 		ColumnParser: RTMonthlyRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTTotalRecommendation = RankType{
-		URL: httpsURL("/rank/recom/datatype3/"),
+		URL: mainSiteURL("/rank/recom/datatype3/"),
 		ColumnParser: ColumnParserFunc(func(book *Book, i int, th, td *goquery.Selection) (err error) {
 			switch strings.TrimSpace(th.Text()) {
 			case "推荐":
@@ -128,80 +135,80 @@ var (
 		}),
 	}
 	RTTotalRecommendationMM = RankType{
-		URL:          httpsURL("/rank/mm/recom/datatype3/"),
+		URL:          mmSiteURL("/rank/recom/datatype3/"),
 		ColumnParser: RTTotalRecommendation.ColumnParser,
 		Site:         "mm",
 	}
 	RTTotalBookmark = RankType{
-		URL: httpsURL("/rank/collect/"),
+		URL: mainSiteURL("/rank/collect/"),
 	}
 	RTTotalBookmarkMM = RankType{
-		URL:  httpsURL("/rank/mm/collect/"),
+		URL:  mmSiteURL("/rank/collect/"),
 		Site: "mm",
 	}
 	RTSignedAuthorNewBook = RankType{
-		URL: httpsURL("/rank/signnewbook/"),
+		URL: mainSiteURL("/rank/signnewbook/"),
 	}
 	RTSignedAuthorNewBookMM = RankType{
-		URL:  httpsURL("/rank/mm/signnewbook/"),
+		URL:  mmSiteURL("/rank/signnewbook/"),
 		Site: "mm",
 	}
 	RTPublicAuthorNewBook = RankType{
-		URL: httpsURL("/rank/pubnewbook/"),
+		URL: mainSiteURL("/rank/pubnewbook/"),
 	}
 	RTPublicAuthorNewBookMM = RankType{
-		URL:  httpsURL("/rank/mm/pubnewbook/"),
+		URL:  mmSiteURL("/rank/pubnewbook/"),
 		Site: "mm",
 	}
 	RTNewSignedAuthorNewBook = RankType{
-		URL: httpsURL("/rank/newsign/"),
+		URL: mainSiteURL("/rank/newsign/"),
 	}
 	RTNewSignedAuthorNewBookMM = RankType{
-		URL:  httpsURL("/rank/mm/newsign/"),
+		URL:  mmSiteURL("/rank/newsign/"),
 		Site: "mm",
 	}
 	RTNewAuthorNewBook = RankType{
-		URL: httpsURL("/rank/newauthor/"),
+		URL: mainSiteURL("/rank/newauthor/"),
 	}
 	RTNewAuthorNewBookMM = RankType{
-		URL:  httpsURL("/rank/mm/newauthor/"),
+		URL:  mmSiteURL("/rank/newauthor/"),
 		Site: "mm",
 	}
 	RTWeeklyFans = RankType{
-		URL: httpsURL("/rank/newfans/"),
+		URL: mainSiteURL("/rank/newfans/"),
 	}
 	RTWeeklyFansMM = RankType{
-		URL:  httpsURL("/rank/mm/newfans/"),
+		URL:  mmSiteURL("/rank/newfans/"),
 		Site: "mm",
 	}
 	RTLastUpdatedVIP = RankType{
-		URL: httpsURL("/rank/vipup/"),
+		URL: mainSiteURL("/rank/vipup/"),
 	}
 	RTDailyMostUpdateVIPMM = RankType{
-		URL:  httpsURL("/rank/mm/vipup/"),
+		URL:  mmSiteURL("/rank/vipup/"),
 		Site: "mm",
 	}
 	RTWeeklyMostUpdateVIPMM = RankType{
-		URL:  httpsURL("/rank/mm/vipup/datatype2/"),
+		URL:  mmSiteURL("/rank/vipup/datatype2/"),
 		Site: "mm",
 	}
 	RTMonthlyMostUpdateVIPMM = RankType{
-		URL:  httpsURL("/rank/mm/vipup/datatype3/"),
+		URL:  mmSiteURL("/rank/vipup/datatype3/"),
 		Site: "mm",
 	}
 	RTTotalWordCountMM = RankType{
-		URL:  httpsURL("/rank/mm/wordcount/"),
+		URL:  mmSiteURL("/rank/wordcount/"),
 		Site: "mm",
 	}
 	RTTotalBookmarkVIP = RankType{
-		URL: httpsURL("/rank/vipcollect/"),
+		URL: mainSiteURL("/rank/vipcollect/"),
 	}
 	RTWeeklySingleChapterSalesMM = RankType{
-		URL:  httpsURL("/rank/mm/subscr/"),
+		URL:  mmSiteURL("/rank/subscr/"),
 		Site: "mm",
 	}
 	RTTotalSingleChapterSalesVIPMM = RankType{
-		URL:  httpsURL("/rank/mm/vipsub/"),
+		URL:  mmSiteURL("/rank/vipsub/"),
 		Site: "mm",
 	}
 )

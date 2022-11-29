@@ -106,7 +106,7 @@ func CategorySearchURL(opts ...CategorySearchOption) (ret url.URL) {
 		i(opt)
 	}
 
-	ret = httpsURL("/all")
+	ret = mainSiteURL("/all")
 
 	if opt.site != "" {
 		ret.Path = opt.site + "/" + ret.Path
