@@ -24,9 +24,7 @@ func TestCategorySearch_simple(t *testing.T) {
 		{CategorySearchOptionSubCategory(SC未来世界)},
 		{CategorySearchOptionPage(2)},
 		{CategorySearchOptionPage(2), CategorySearchOptionSort(SortMonthRecommend)},
-		{CategorySearchOptionSort(SortLastUpdated)},
 		{CategorySearchOptionSort(SortMonthRecommend)},
-		{CategorySearchOptionSort(SortRecentFinished)},
 		{CategorySearchOptionSort(SortTotalBookmark)},
 		{CategorySearchOptionSort(SortTotalRecommend)},
 		{CategorySearchOptionSort(SortWeekRecommend)},
@@ -73,9 +71,6 @@ func TestCategorySearch_simple(t *testing.T) {
 				}
 				if opt.sort == "" {
 					assert.NotEmpty(t, i.LastUpdated)
-				}
-				if opt.sort == SortRecentFinished {
-					assert.NotEmpty(t, i.Finished)
 				}
 				hasWeekRecommendCount = hasWeekRecommendCount || i.WeekRecommendCount > 0
 				hasMonthRecommendCount = hasMonthRecommendCount || i.MonthRecommendCount > 0
