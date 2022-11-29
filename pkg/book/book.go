@@ -14,6 +14,7 @@ import (
 	"github.com/NateScarlet/qidian/pkg/client"
 	"github.com/NateScarlet/qidian/pkg/util"
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 )
 
 // Book model
@@ -135,10 +136,18 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 
 	// Introduction
 	b.Summary = infoElem.Find(".intro").Text()
-	b.Introduction, ok = doc.Find("meta[property=\"og:description\"]").First().Attr("content")
-	if !ok {
-		err = fmt.Errorf("'og:description' meta tag not found")
-		return
+	for _, p := range doc.Find(".book-intro > p").Nodes {
+		for n := p.FirstChild; n != nil; n = n.NextSibling {
+			switch n.Type {
+			case html.TextNode:
+				b.Introduction += n.Data
+			case html.ElementNode:
+				if n.Data == "br" {
+					b.Introduction += "\n"
+				}
+			}
+		}
+		b.Introduction += "\n"
 	}
 	b.Introduction = strings.TrimSpace(b.Introduction)
 
