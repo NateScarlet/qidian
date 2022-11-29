@@ -27,7 +27,7 @@ func TestNodeJSEngine(t *testing.T) {
 	}{
 		{name: "should return value", giveUnsafeJS: "'aa'", wantOutput: "aa"},
 		{name: "should allow variable", giveUnsafeJS: "a = 1; a", wantOutput: "1"},
-		{name: "should now allow require", giveUnsafeJS: "require('fs')", wantError: "ReferenceError: require is not defined"},
+		{name: "should not allow require", giveUnsafeJS: "require('fs')", wantError: "ReferenceError: require is not defined"},
 		{name: "should allow throw error", giveUnsafeJS: "throw 'my error'", wantError: "exit status 1: my error"},
 		{name: "should wait promise", giveUnsafeJS: "Promise.resolve(3)", wantOutput: "3"},
 		{name: "should error on invalid syntax", giveUnsafeJS: "(", wantError: "SyntaxError"},
