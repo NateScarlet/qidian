@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.5](https://github.com/NateScarlet/qidian/compare/v0.4.4...v0.4.5) (2022-11-30)
+
+
+### Bug Fixes
+
+* **book:** follow `SortRecentFinished` removal ([1cf1b62](https://github.com/NateScarlet/qidian/commit/1cf1b6232dd6efb17db740cc529acec8d087dd09))
+
+
+### Reverts
+
+* "fix(book): follow rank sort removal" ([e957b52](https://github.com/NateScarlet/qidian/commit/e957b52ec525ba9619bfc37b1bf249e848fd4b94))
+
 ## [0.4.4](https://github.com/NateScarlet/qidian/compare/v0.4.3...v0.4.4) (2022-11-29)
 
 
