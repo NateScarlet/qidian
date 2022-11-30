@@ -19,6 +19,8 @@ type Sort string
 const (
 	SortTotalRecommend Sort = "2"
 	SortCharCount      Sort = "3"
+	SortLastUpdated    Sort = "5"
+	SortRecentFinished Sort = "6"
 	SortWeekRecommend  Sort = "9"
 	SortMonthRecommend Sort = "10"
 	SortTotalBookmark  Sort = "11"
