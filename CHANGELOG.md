@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.6](https://github.com/NateScarlet/qidian/compare/v0.4.5...v0.4.6) (2022-12-20)
+
+
+### Bug Fixes
+
+* **book:** trim space in introduction ([f642489](https://github.com/NateScarlet/qidian/commit/f64248937ae63e26df24a7aa609795a00412b6c8))
+* **deps:** update module golang.org/x/image to v0.2.0 ([c2dd907](https://github.com/NateScarlet/qidian/commit/c2dd9077ffdf35f01eb0c45d98833c7cdfbbcf52))
+* **deps:** update module golang.org/x/net to v0.3.0 ([fd1a81c](https://github.com/NateScarlet/qidian/commit/fd1a81c2616156aa6fe4ef11372f775f48ea78cb))
+* **deps:** update module golang.org/x/net to v0.4.0 ([d5b0540](https://github.com/NateScarlet/qidian/commit/d5b054063f87a385d0e257019c385925348fbdac))
+
 ## [0.4.5](https://github.com/NateScarlet/qidian/compare/v0.4.4...v0.4.5) (2022-11-30)
 
 
