@@ -140,7 +140,7 @@ func (b *Book) Fetch(ctx context.Context) (err error) {
 		for n := p.FirstChild; n != nil; n = n.NextSibling {
 			switch n.Type {
 			case html.TextNode:
-				b.Introduction += n.Data
+				b.Introduction += strings.TrimSpace(n.Data)
 			case html.ElementNode:
 				if n.Data == "br" {
 					b.Introduction += "\n"
